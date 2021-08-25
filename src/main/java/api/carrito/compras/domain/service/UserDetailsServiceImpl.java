@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.service;
 
-import api.carrito.compras.domain.data.UserData;
+import api.carrito.compras.domain.usecase.UserDataEntity;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserData userData;
+    private final UserDataEntity userData;
 
     @Override
     @Transactional(readOnly = true)
