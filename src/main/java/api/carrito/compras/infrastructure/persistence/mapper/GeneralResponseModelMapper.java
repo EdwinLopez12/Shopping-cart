@@ -6,10 +6,12 @@ import api.carrito.compras.domain.model.ExceptionResponseModel;
 import api.carrito.compras.domain.model.GeneralDataResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.model.Link;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class GeneralResponseModelMapper {
 
     static final String SELF = "self";
