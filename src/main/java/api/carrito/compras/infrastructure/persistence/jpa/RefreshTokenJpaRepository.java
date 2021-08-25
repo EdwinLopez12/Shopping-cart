@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RefreshTokenJpaRepository extends JpaRepository<Long, RefreshToken> {
+public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
 
 }
