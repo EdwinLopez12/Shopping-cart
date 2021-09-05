@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface RoleDataEntity {
 
     Optional<Role> findByName(String name);
+
+    Role save(Role createRole);
 }

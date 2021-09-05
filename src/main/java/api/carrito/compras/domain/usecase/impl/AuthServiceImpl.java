@@ -23,7 +23,6 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private static final String PASSWORDS_NOT_MATCH = "Las contraseñas no coinciden";
@@ -43,10 +42,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public GeneralResponseModel signup(RegisterUserRequest registerUserRequest) {
-        log.info("llega");
         String username = userData.findUsername(registerUserRequest.getUsername());
         String email = userData.findEmail(registerUserRequest.getEmail());
-        log.info("busqueda");
         if(username == null){
             if(email == null){
                 if(registerUserRequest.getPassword().equals(registerUserRequest.getPasswordVerify())){
@@ -56,13 +53,9 @@ public class AuthServiceImpl implements AuthService {
                             .password(passwordEncoder.encode(registerUserRequest.getPassword()))
                             .isEnable(false)
                             .build();
-                    log.info("Usuario seteado");
                     Role role = roleData.findByName("USER_ROLE").orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
-                    log.info("Rol");
                     user.addRole(role);
-                    log.info("Agregando rol");
                     userData.save(user);
-                    log.info("Almacenando rol");
                     String token = generateVerificationToken(user);
                     // Mensaje con el token de activación
                     return generalMapper.responseToGeneralResponseModel(201, "signup", "Cuenta creada correctamente, por favor revisa el correo para activarla!", null, "Ok");

@@ -18,4 +18,9 @@ public class RoleRepositoryImpl implements RoleDataEntity {
     public Optional<Role> findByName(String name) {
         return roleJpaRepository.findByName(name);
     }
+
+    @Override
+    public Role save(Role role) {
+        return roleJpaRepository.save(role);
+    }
 }
