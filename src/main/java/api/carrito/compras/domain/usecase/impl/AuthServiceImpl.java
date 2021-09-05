@@ -8,6 +8,8 @@ import api.carrito.compras.domain.usecase.AuthService;
 import api.carrito.compras.domain.repository.RoleDataEntity;
 import api.carrito.compras.domain.repository.UserDataEntity;
 import api.carrito.compras.domain.repository.VerificationTokenDataEntity;
+import api.carrito.compras.domain.usecase.MailService;
+import api.carrito.compras.domain.utils.MailData;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
@@ -33,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleDataEntity roleData;
     private final VerificationTokenDataEntity verificationTokenData;
 
+    private final MailService mailService;
 
     private final GeneralResponseModelMapper generalMapper;
 
@@ -56,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
                     user.addRole(role);
                     userData.save(user);
                     String token = generateVerificationToken(user);
-                    // Mensaje con el token de activación
+                    mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_SIGNUP, MailData.END_POINT_SIGNUP, token);
                     return generalMapper.responseToGeneralResponseModel(201, "signup", "Cuenta creada correctamente, por favor revisa el correo para activarla!", null, "Ok");
                 }else{
                     throw new ApiConflictException(PASSWORDS_NOT_MATCH);
