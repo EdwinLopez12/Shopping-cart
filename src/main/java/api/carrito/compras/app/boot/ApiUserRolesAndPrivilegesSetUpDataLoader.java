@@ -1,8 +1,8 @@
 package api.carrito.compras.app.boot;
 
-import api.carrito.compras.domain.usecase.PrivilegeDataEntity;
-import api.carrito.compras.domain.usecase.RoleDataEntity;
-import api.carrito.compras.domain.usecase.UserDataEntity;
+import api.carrito.compras.domain.repository.PrivilegeDataEntity;
+import api.carrito.compras.domain.repository.RoleDataEntity;
+import api.carrito.compras.domain.repository.UserDataEntity;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;

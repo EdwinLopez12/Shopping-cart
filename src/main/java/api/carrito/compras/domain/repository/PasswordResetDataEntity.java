@@ -1,4 +1,4 @@
-package api.carrito.compras.domain.usecase;
+package api.carrito.compras.domain.repository;
 
 
 public interface PasswordResetDataEntity {

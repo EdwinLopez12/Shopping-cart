@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.usecase.impl;
 
-import api.carrito.compras.domain.usecase.UserDataEntity;
+import api.carrito.compras.domain.repository.UserDataEntity;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;

@@ -1,6 +1,6 @@
-package api.carrito.compras.domain.usecase.impl;
+package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.usecase.RoleDataEntity;
+import api.carrito.compras.domain.repository.RoleDataEntity;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.jpa.RoleJpaRepository;
 import lombok.AllArgsConstructor;

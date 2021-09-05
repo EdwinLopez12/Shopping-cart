@@ -1,6 +1,6 @@
-package api.carrito.compras.domain.usecase.impl;
+package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.usecase.VerificationTokenDataEntity;
+import api.carrito.compras.domain.repository.VerificationTokenDataEntity;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
 import api.carrito.compras.infrastructure.persistence.jpa.VerificationTokenJpaRepository;
 import lombok.AllArgsConstructor;

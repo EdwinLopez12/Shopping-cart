@@ -1,6 +1,6 @@
-package api.carrito.compras.domain.usecase.impl;
+package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.usecase.PasswordResetDataEntity;
+import api.carrito.compras.domain.repository.PasswordResetDataEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
