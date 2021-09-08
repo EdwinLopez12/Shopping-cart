@@ -109,6 +109,6 @@ public class ExceptionHandlerApi {
                     .build();
             exceptionResponseModel.getErrors().add(errorModel);
         }
-        return generalResponseModelMapper.responseToInvalidMethodArgumentExceptionResponseModel(STATUS, HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation failed\n", request.getServletPath(), exceptionResponseModel);
+        return generalResponseModelMapper.responseToInvalidMethodArgumentExceptionResponseModel(STATUS, HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation failed", request.getServletPath(), exceptionResponseModel);
     }
 }

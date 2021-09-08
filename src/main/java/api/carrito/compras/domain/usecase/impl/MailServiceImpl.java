@@ -19,6 +19,8 @@ import static api.carrito.compras.infrastructure.RoutesMapping.URL_AUTH_V1;
 @AllArgsConstructor
 public class MailServiceImpl implements MailService {
 
+    private static final String MAIL_EXCEPTION = "An exception occurred while sending an email to ";
+
     private final JavaMailSender javaMailSender;
     private final MailContentBuilder mailContentBuilder;
 
@@ -47,7 +49,7 @@ public class MailServiceImpl implements MailService {
         try{
             javaMailSender.send(mimeMessagePreparator);
         }catch (MailException mailException){
-            throw new ApiException("Ocurrió una excepcion al enviar un correo a" + notificationEmailModel.getRecipient(), mailException);
+            throw new ApiException(MAIL_EXCEPTION + notificationEmailModel.getRecipient(), mailException);
         }
     }
 }
