@@ -5,7 +5,6 @@ import api.carrito.compras.domain.model.ExceptionResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
@@ -26,7 +25,7 @@ public class ExceptionHandlerApi {
     private final GeneralResponseModelMapper generalResponseModelMapper;
 
     /**
-     * Manejador de excepciones globales
+     * Global Exception Handler
      *
      * @param request   the request
      * @param exception the exception
@@ -39,28 +38,7 @@ public class ExceptionHandlerApi {
     }
 
     /**
-     * Manejador de excepciones de integridad
-     *
-     * @param request   the request
-     * @param exception the exception
-     * @return the exception handler response
-     */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public GeneralResponseModel handleIntegrityException(HttpServletRequest request, DataIntegrityViolationException exception){
-        String exceptionMessage = exception.getMostSpecificCause().toString();
-        if (exceptionMessage.startsWith("java.sql.SQLIntegrityConstraintViolationException: Column ")){
-            int length = exceptionMessage.length()-16;
-            exceptionMessage = exceptionMessage.substring(59, length);
-        }
-        if (exceptionMessage.startsWith("java.sql.SQLIntegrityConstraintViolationException: ")){
-            exceptionMessage = "Entrada de datos duplicada";
-        }
-        return generalResponseModelMapper.responseToGeneralExceptionResponseModel(STATUS, HttpStatus.CONFLICT.value(), exceptionMessage, request.getServletPath());
-    }
-
-    /**
-     * Manejador de excepciones de authenticacion
+     * Authentication Exception Handler
      *
      * @param request   the request
      * @param exception the exception
@@ -69,11 +47,11 @@ public class ExceptionHandlerApi {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public GeneralResponseModel handleAuthenticationException(HttpServletRequest request, Throwable exception){
-        return generalResponseModelMapper.responseToGeneralExceptionResponseModel(STATUS, HttpStatus.UNAUTHORIZED.value(), "Autenticación necesaria para acceder al sitio", request.getServletPath());
+        return generalResponseModelMapper.responseToGeneralExceptionResponseModel(STATUS, HttpStatus.UNAUTHORIZED.value(), "Authentication required to access the site", request.getServletPath());
     }
 
     /**
-     * Manejador de accesos denegados
+     * Denied Exception Handler
      *
      * @param request the request
      * @return the exception handler response
@@ -86,7 +64,7 @@ public class ExceptionHandlerApi {
     }
 
     /**
-     * Manejador de excepciones de conflictos
+     * Conflict Exception Handler
      *
      * @param request   the request
      * @param exception the exception
@@ -99,7 +77,7 @@ public class ExceptionHandlerApi {
     }
 
     /**
-     * Manejador de 404 excepciones
+     * Not Found Exception Handler
      *
      * @param request   the request
      * @param exception the exception
@@ -112,7 +90,7 @@ public class ExceptionHandlerApi {
     }
 
     /**
-     * Manejador de argumentos no validos
+     * Arg no valid Exception Handler
      *
      * @param request   the request
      * @param exception the exception
@@ -131,6 +109,6 @@ public class ExceptionHandlerApi {
                     .build();
             exceptionResponseModel.getErrors().add(errorModel);
         }
-        return generalResponseModelMapper.responseToInvalidMethodArgumentExceptionResponseModel(STATUS, HttpStatus.UNPROCESSABLE_ENTITY.value(), "La validación falló", request.getServletPath(), exceptionResponseModel);
+        return generalResponseModelMapper.responseToInvalidMethodArgumentExceptionResponseModel(STATUS, HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation failed\n", request.getServletPath(), exceptionResponseModel);
     }
 }
