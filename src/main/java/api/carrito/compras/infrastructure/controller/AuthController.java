@@ -1,6 +1,7 @@
 package api.carrito.compras.infrastructure.controller;
 
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
+import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.AuthService;
@@ -50,7 +51,7 @@ public class AuthController {
 
         return new ResponseEntity<>(authService.VerifyAccount(token), HttpStatus.OK);
     }
-    
+
     /**
      * Login.
      *
@@ -61,5 +62,17 @@ public class AuthController {
     public ResponseEntity<GeneralResponseModel> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
 
         return new ResponseEntity<>(authService.login(loginUserRequest), HttpStatus.OK);
+    }
+
+    /**
+     * Refresh Token.
+     *
+     * @param refreshTokenRequest the refresh token request
+     * @return the response entity
+     */
+    @PostMapping(value = "/refresh-token")
+    public ResponseEntity<GeneralResponseModel> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+
+        return new ResponseEntity<>(authService.refreshToken(refreshTokenRequest), HttpStatus.OK);
     }
 }

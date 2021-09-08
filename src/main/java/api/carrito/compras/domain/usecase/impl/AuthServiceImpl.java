@@ -2,6 +2,7 @@ package api.carrito.compras.domain.usecase.impl;
 
 import api.carrito.compras.domain.dto.auth.AuthenticationResponse;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
+import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
@@ -133,5 +134,19 @@ public class AuthServiceImpl implements AuthService {
                 .username(loginUserRequest.getUsername())
                 .build();
         return generalMapper.responseToGeneralResponseModel(200, "login", "Logged in", Collections.singletonList(authenticationResponse), "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        User user = userRepository.findByUsernameOptional(refreshTokenRequest.getUsername()).orElseThrow(() -> new ApiNotFoundException(USERNAME_NOT_FOUND));
+        String token = jwtProvider.generateTokenWithUsername(user.getUsername());
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(FormatDates.instantToString(Instant.now().plusMillis(jwtProvider.getJwtExpirationTimeMillis())))
+                .username(user.getUsername())
+                .build();
+        return generalMapper.responseToGeneralResponseModel(200, "refresh token", "Refresh token refreshed", Collections.singletonList(authenticationResponse), "Ok");
     }
 }

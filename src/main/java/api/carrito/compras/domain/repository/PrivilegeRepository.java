@@ -7,6 +7,5 @@ import java.util.Optional;
 public interface PrivilegeRepository {
 
     Optional<Privilege> findByName(String name);
-
     Privilege save(Privilege privilege);
 }

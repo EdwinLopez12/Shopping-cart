@@ -6,11 +6,18 @@ import api.carrito.compras.infrastructure.persistence.jpa.RefreshTokenJpaReposit
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @AllArgsConstructor
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
     private final RefreshTokenJpaRepository refreshTokenJpaRepository;
+
+    @Override
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenJpaRepository.findByToken(token);
+    }
 
     @Override
     public RefreshToken save(RefreshToken refreshToken) {
