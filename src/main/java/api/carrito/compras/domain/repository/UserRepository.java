@@ -4,7 +4,7 @@ import api.carrito.compras.infrastructure.persistence.entity.User;
 
 import java.util.Optional;
 
-public interface UserDataEntity {
+public interface UserRepository {
 
     Optional<User> findByUsernameOptional(String username);
 

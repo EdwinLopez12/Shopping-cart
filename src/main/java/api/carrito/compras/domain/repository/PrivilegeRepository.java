@@ -4,7 +4,7 @@ import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 
 import java.util.Optional;
 
-public interface PrivilegeDataEntity {
+public interface PrivilegeRepository {
 
     Optional<Privilege> findByName(String name);
 

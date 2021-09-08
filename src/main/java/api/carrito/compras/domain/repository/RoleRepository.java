@@ -4,7 +4,7 @@ import api.carrito.compras.infrastructure.persistence.entity.Role;
 
 import java.util.Optional;
 
-public interface RoleDataEntity {
+public interface RoleRepository {
 
     Optional<Role> findByName(String name);
 
