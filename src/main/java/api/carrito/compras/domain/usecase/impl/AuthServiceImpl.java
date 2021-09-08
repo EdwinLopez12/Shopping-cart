@@ -15,6 +15,7 @@ import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private static final String PASSWORDS_NOT_MATCH = "Passwords don't match";
@@ -82,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
         VerificationToken verificationToken = VerificationToken.builder()
                 .token(token)
                 .user(user)
-                .expiryDate(instant.plusMillis(60000))
+                .expiryDate(instant.plusMillis(3600000))
                 .build();
         verificationTokenData.save(verificationToken);
         return token;
@@ -90,8 +92,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public GeneralResponseModel VerifyAccount(String token) {
+        Instant now = Instant.now();
         VerificationToken verificationToken = verificationTokenData.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
-        if (verificationToken.getExpiryDate().compareTo(Instant.now()) <= 0) {
+        if (verificationToken.getExpiryDate().compareTo(now) >= 0) {
             String username = verificationToken.getUser().getUsername();
             User user = userData.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USERNAME_NOT_FOUND));
             user.setIsEnable(true);
