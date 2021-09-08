@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.repository.VerificationTokenDataEntity;
+import api.carrito.compras.domain.repository.VerificationTokenRepository;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
 import api.carrito.compras.infrastructure.persistence.jpa.VerificationTokenJpaRepository;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class VerificationTokenRepositoryImpl implements VerificationTokenDataEntity {
+public class VerificationTokenRepositoryImpl implements VerificationTokenRepository {
 
     private final VerificationTokenJpaRepository verificationTokenJpaRepository;
 

@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.repository.UserDataEntity;
+import api.carrito.compras.domain.repository.UserRepository;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.jpa.UserJpaRepository;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class UserRepositoryImpl implements UserDataEntity {
+public class UserRepositoryImpl implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
 

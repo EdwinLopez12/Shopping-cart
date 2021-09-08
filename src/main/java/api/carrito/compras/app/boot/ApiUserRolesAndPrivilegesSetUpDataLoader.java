@@ -1,8 +1,8 @@
 package api.carrito.compras.app.boot;
 
-import api.carrito.compras.domain.repository.PrivilegeDataEntity;
-import api.carrito.compras.domain.repository.RoleDataEntity;
-import api.carrito.compras.domain.repository.UserDataEntity;
+import api.carrito.compras.domain.repository.PrivilegeRepository;
+import api.carrito.compras.domain.repository.RoleRepository;
+import api.carrito.compras.domain.repository.UserRepository;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
@@ -25,9 +25,9 @@ import java.util.Optional;
 @Order(1)
 public class ApiUserRolesAndPrivilegesSetUpDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final PrivilegeDataEntity privilegeData;
-    private final RoleDataEntity roleData;
-    private final UserDataEntity userData;
+    private final PrivilegeRepository privilegeData;
+    private final RoleRepository roleData;
+    private final UserRepository userData;
     private final PasswordEncoder passwordEncoder;
 
     @Override

@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.repository.impl;
 
-import api.carrito.compras.domain.repository.RoleDataEntity;
+import api.carrito.compras.domain.repository.RoleRepository;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.jpa.RoleJpaRepository;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class RoleRepositoryImpl implements RoleDataEntity {
+public class RoleRepositoryImpl implements RoleRepository {
 
     private final RoleJpaRepository roleJpaRepository;
 
