@@ -8,4 +8,5 @@ public interface AuthService {
 
     GeneralResponseModel signup(RegisterUserRequest registerUserRequest);
     String generateVerificationToken(User user);
+    GeneralResponseModel VerifyAccount(String token);
 }

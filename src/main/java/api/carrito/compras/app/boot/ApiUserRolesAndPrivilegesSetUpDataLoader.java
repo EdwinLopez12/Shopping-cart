@@ -91,7 +91,7 @@ public class ApiUserRolesAndPrivilegesSetUpDataLoader implements ApplicationList
     }
 
     private void createUserIfNotFound(String username, Role role) {
-        Optional<User> user = userData.findByUsername(username);
+        Optional<User> user = userData.findByUsernameOptional(username);
         if (!user.isPresent()) {
             User createUser = User.builder()
                     .username(username)

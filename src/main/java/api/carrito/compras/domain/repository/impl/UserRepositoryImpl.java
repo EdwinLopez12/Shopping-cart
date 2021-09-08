@@ -15,7 +15,7 @@ public class UserRepositoryImpl implements UserDataEntity {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<User> findByUsernameOptional(String username) {
         return userJpaRepository.findByUsername(username);
     }
 

@@ -4,10 +4,10 @@ import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.model.GeneralResponseModel;
-import api.carrito.compras.domain.usecase.AuthService;
 import api.carrito.compras.domain.repository.RoleDataEntity;
 import api.carrito.compras.domain.repository.UserDataEntity;
 import api.carrito.compras.domain.repository.VerificationTokenDataEntity;
+import api.carrito.compras.domain.usecase.AuthService;
 import api.carrito.compras.domain.usecase.MailService;
 import api.carrito.compras.domain.utils.MailData;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
@@ -26,10 +26,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final String PASSWORDS_NOT_MATCH = "Las contraseñas no coinciden";
-    private static final String EMAIL_ALREADY_EXIST = "El email ya está en uso";
-    private static final String USERNAME_ALREADY_EXIST = "El nombre de usuario ya está en uso";
-    private static final String ROLE_NOT_FOUND = "El rol no existe o no pudo ser encontrado";
+    private static final String PASSWORDS_NOT_MATCH = "Passwords don't match";
+    private static final String EMAIL_ALREADY_EXIST = "The email is already in use";
+    private static final String USERNAME_ALREADY_EXIST = "Username is already in use";
+    private static final String USERNAME_NOT_FOUND = "The username doesn't exist or could not be found";
+    private static final String ROLE_NOT_FOUND = "The role doesn't exist or could not be found";
+    private static final String TOKEN_NOT_FOUND = "Token doesn't exist or could not be found";
+    private static final String TOKEN_EXPIRED = "Token expired!";
 
     private final UserDataEntity userData;
     private final RoleDataEntity roleData;
@@ -60,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
                     userData.save(user);
                     String token = generateVerificationToken(user);
                     mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_SIGNUP, MailData.END_POINT_SIGNUP, token);
-                    return generalMapper.responseToGeneralResponseModel(201, "signup", "Cuenta creada correctamente, por favor revisa el correo para activarla!", null, "Ok");
+                    return generalMapper.responseToGeneralResponseModel(201, "signup", "Account successfully created, please check the email to activate it!", null, "Ok");
                 }else{
                     throw new ApiConflictException(PASSWORDS_NOT_MATCH);
                 }
@@ -83,5 +86,19 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         verificationTokenData.save(verificationToken);
         return token;
+    }
+
+    @Override
+    public GeneralResponseModel VerifyAccount(String token) {
+        VerificationToken verificationToken = verificationTokenData.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        if (verificationToken.getExpiryDate().compareTo(Instant.now()) <= 0) {
+            String username = verificationToken.getUser().getUsername();
+            User user = userData.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USERNAME_NOT_FOUND));
+            user.setIsEnable(true);
+            userData.save(user);
+            return generalMapper.responseToGeneralResponseModel(200, "verify account", "Account activated successfully!", null, "Ok");
+        }else{
+            throw new ApiConflictException(TOKEN_EXPIRED);
+        }
     }
 }

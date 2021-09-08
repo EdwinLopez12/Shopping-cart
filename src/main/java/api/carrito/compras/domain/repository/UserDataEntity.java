@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserDataEntity {
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameOptional(String username);
 
     String findUsername(String username);
 
