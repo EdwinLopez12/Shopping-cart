@@ -1,5 +1,6 @@
 package api.carrito.compras.infrastructure.controller;
 
+import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.AuthService;
@@ -33,7 +34,7 @@ public class AuthController {
      * @return the response entity
      */
     @PostMapping(value = "/signup")
-    public ResponseEntity<GeneralResponseModel> signup(@Valid @RequestBody RegisterUserRequest registerUserRequest){
+    public ResponseEntity<GeneralResponseModel> signup(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
 
         return new ResponseEntity<>(authService.signup(registerUserRequest), HttpStatus.CREATED);
     }
@@ -45,8 +46,20 @@ public class AuthController {
      * @return the response entity
      */
     @GetMapping(value = "/account-verification/{token}")
-    public ResponseEntity<GeneralResponseModel> verifyAccount(@PathVariable(name = "token") String token){
+    public ResponseEntity<GeneralResponseModel> verifyAccount(@PathVariable(name = "token") String token) {
 
         return new ResponseEntity<>(authService.VerifyAccount(token), HttpStatus.OK);
+    }
+    
+    /**
+     * Login.
+     *
+     * @param loginUserRequest the login user request
+     * @return the response entity
+     */
+    @PostMapping(value = "/login")
+    public ResponseEntity<GeneralResponseModel> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
+
+        return new ResponseEntity<>(authService.login(loginUserRequest), HttpStatus.OK);
     }
 }

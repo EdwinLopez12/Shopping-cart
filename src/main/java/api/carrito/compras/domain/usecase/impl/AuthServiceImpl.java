@@ -1,26 +1,36 @@
 package api.carrito.compras.domain.usecase.impl;
 
+import api.carrito.compras.domain.dto.auth.AuthenticationResponse;
+import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.model.GeneralResponseModel;
-import api.carrito.compras.domain.repository.RoleDataEntity;
-import api.carrito.compras.domain.repository.UserDataEntity;
-import api.carrito.compras.domain.repository.VerificationTokenDataEntity;
+import api.carrito.compras.domain.repository.RoleRepository;
+import api.carrito.compras.domain.repository.UserRepository;
+import api.carrito.compras.domain.repository.VerificationTokenRepository;
 import api.carrito.compras.domain.usecase.AuthService;
 import api.carrito.compras.domain.usecase.MailService;
+import api.carrito.compras.domain.usecase.RefreshTokenService;
+import api.carrito.compras.domain.utils.FormatDates;
 import api.carrito.compras.domain.utils.MailData;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
+import api.carrito.compras.infrastructure.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -36,21 +46,25 @@ public class AuthServiceImpl implements AuthService {
     private static final String TOKEN_NOT_FOUND = "Token doesn't exist or could not be found";
     private static final String TOKEN_EXPIRED = "Token expired!";
 
-    private final UserDataEntity userData;
-    private final RoleDataEntity roleData;
-    private final VerificationTokenDataEntity verificationTokenData;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     private final MailService mailService;
+    private final RefreshTokenService refreshTokenService;
 
     private final GeneralResponseModelMapper generalMapper;
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
+
     @Override
     @Transactional
     public GeneralResponseModel signup(RegisterUserRequest registerUserRequest) {
-        String username = userData.findUsername(registerUserRequest.getUsername());
-        String email = userData.findEmail(registerUserRequest.getEmail());
+        String username = userRepository.findUsername(registerUserRequest.getUsername());
+        String email = userRepository.findEmail(registerUserRequest.getEmail());
         if(username == null){
             if(email == null){
                 if(registerUserRequest.getPassword().equals(registerUserRequest.getPasswordVerify())){
@@ -60,9 +74,9 @@ public class AuthServiceImpl implements AuthService {
                             .password(passwordEncoder.encode(registerUserRequest.getPassword()))
                             .isEnable(false)
                             .build();
-                    Role role = roleData.findByName("USER_ROLE").orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
+                    Role role = roleRepository.findByName("USER_ROLE").orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
                     user.addRole(role);
-                    userData.save(user);
+                    userRepository.save(user);
                     String token = generateVerificationToken(user);
                     mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_SIGNUP, MailData.END_POINT_SIGNUP, token);
                     return generalMapper.responseToGeneralResponseModel(201, "signup", "Account successfully created, please check the email to activate it!", null, "Ok");
@@ -86,22 +100,38 @@ public class AuthServiceImpl implements AuthService {
                 .user(user)
                 .expiryDate(instant.plusMillis(3600000))
                 .build();
-        verificationTokenData.save(verificationToken);
+        verificationTokenRepository.save(verificationToken);
         return token;
     }
 
     @Override
     public GeneralResponseModel VerifyAccount(String token) {
         Instant now = Instant.now();
-        VerificationToken verificationToken = verificationTokenData.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
         if (verificationToken.getExpiryDate().compareTo(now) >= 0) {
             String username = verificationToken.getUser().getUsername();
-            User user = userData.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USERNAME_NOT_FOUND));
+            User user = userRepository.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USERNAME_NOT_FOUND));
             user.setIsEnable(true);
-            userData.save(user);
+            userRepository.save(user);
             return generalMapper.responseToGeneralResponseModel(200, "verify account", "Account activated successfully!", null, "Ok");
         }else{
             throw new ApiConflictException(TOKEN_EXPIRED);
         }
+    }
+
+    @Override
+    public GeneralResponseModel login(LoginUserRequest loginUserRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginUserRequest.getUsername(), loginUserRequest.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generateToken(authentication);
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(FormatDates.instantToString(Instant.now().plusMillis(jwtProvider.getJwtExpirationTimeMillis())))
+                .username(loginUserRequest.getUsername())
+                .build();
+        return generalMapper.responseToGeneralResponseModel(200, "login", "Logged in", Collections.singletonList(authenticationResponse), "Ok");
     }
 }
