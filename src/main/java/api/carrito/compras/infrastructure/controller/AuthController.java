@@ -7,7 +7,6 @@ import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.AuthService;
-import api.carrito.compras.domain.usecase.RefreshTokenService;
 import api.carrito.compras.infrastructure.RoutesMapping;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -101,5 +100,17 @@ public class AuthController {
     public ResponseEntity<GeneralResponseModel> sendEmailToResetPassword(@Valid @RequestBody EmailRequest emailRequest) {
 
         return new ResponseEntity<>(authService.sendEmailToResetPassword(emailRequest), HttpStatus.OK);
+    }
+
+    /**
+     * Verify token to reset password.
+     *
+     * @param token the token
+     * @return the response entity
+     */
+    @GetMapping(value = "/reset-password/{token}")
+    public ResponseEntity<GeneralResponseModel> verifyTokenToResetPassword(@PathVariable(name = "token") String token) {
+
+        return new ResponseEntity<>(authService.verifyTokenToResetPassword(token), HttpStatus.OK);
     }
 }

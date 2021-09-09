@@ -17,4 +17,5 @@ public interface AuthService {
     GeneralResponseModel refreshToken(RefreshTokenRequest refreshTokenRequest);
     GeneralResponseModel logout(LogoutRequest logoutRequest);
     GeneralResponseModel sendEmailToResetPassword(EmailRequest emailRequest);
+    GeneralResponseModel verifyTokenToResetPassword(String token);
 }

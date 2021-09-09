@@ -176,6 +176,12 @@ public class AuthServiceImpl implements AuthService {
         return generalMapper.responseToGeneralResponseModel(200, "send email reset password", "Email was sent!", null, "Ok");
     }
 
+    @Override
+    public GeneralResponseModel verifyTokenToResetPassword(String token) {
+        passwordResetRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        return generalMapper.responseToGeneralResponseModel(200, "Verify token", "Verified token", null, "Ok");
+    }
+
     private String generateRandomUUID() {
         return UUID.randomUUID().toString();
     }

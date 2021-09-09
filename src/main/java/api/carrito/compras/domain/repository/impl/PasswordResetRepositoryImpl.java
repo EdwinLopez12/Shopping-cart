@@ -6,11 +6,19 @@ import api.carrito.compras.infrastructure.persistence.jpa.PasswordResetJpaReposi
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @AllArgsConstructor
 public class PasswordResetRepositoryImpl implements PasswordResetRepository {
 
     private final PasswordResetJpaRepository passwordResetJpaRepository;
+
+
+    @Override
+    public Optional<PasswordReset> findByToken(String token) {
+        return passwordResetJpaRepository.findByToken(token);
+    }
 
     @Override
     public void save(PasswordReset passwordReset) {
