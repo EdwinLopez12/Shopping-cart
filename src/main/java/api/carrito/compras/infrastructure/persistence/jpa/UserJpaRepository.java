@@ -16,6 +16,11 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     @Query(
+            value = "SELECT u FROM User u WHERE u.email = :email"
+    )
+    Optional<User> findByEmail(String email);
+
+    @Query(
             value = "SELECT u.username FROM User u WHERE u.username = :username"
     )
     String findUsername(String username);
@@ -24,4 +29,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
             value = "SELECT u.email FROM User u WHERE u.email = :email"
     )
     String findEmail(String email);
+
+
 }

@@ -1,5 +1,6 @@
 package api.carrito.compras.infrastructure.controller;
 
+import api.carrito.compras.domain.dto.auth.EmailRequest;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.LogoutRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
@@ -29,7 +30,6 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
 
     /**
      * Signup
@@ -74,7 +74,7 @@ public class AuthController {
      * @return the response entity
      */
     @PostMapping(value = "/refresh-token")
-    public ResponseEntity<GeneralResponseModel> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+    public ResponseEntity<GeneralResponseModel> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
 
         return new ResponseEntity<>(authService.refreshToken(refreshTokenRequest), HttpStatus.OK);
     }
@@ -86,8 +86,14 @@ public class AuthController {
      * @return the response entity
      */
     @PostMapping(value = "/logout")
-    public ResponseEntity<GeneralResponseModel> logout(@Valid @RequestBody LogoutRequest logoutRequest){
+    public ResponseEntity<GeneralResponseModel> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
 
         return new ResponseEntity<>(authService.logout(logoutRequest), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/reset-password")
+    public ResponseEntity<GeneralResponseModel> sendEmailToResetPassword(@Valid @RequestBody EmailRequest emailRequest) {
+
+        return new ResponseEntity<>(authService.sendEmailToResetPassword(emailRequest), HttpStatus.OK);
     }
 }

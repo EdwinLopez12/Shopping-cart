@@ -1,6 +1,7 @@
 package api.carrito.compras.domain.usecase.impl;
 
 import api.carrito.compras.domain.dto.auth.AuthenticationResponse;
+import api.carrito.compras.domain.dto.auth.EmailRequest;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.LogoutRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
@@ -8,6 +9,7 @@ import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.model.GeneralResponseModel;
+import api.carrito.compras.domain.repository.PasswordResetRepository;
 import api.carrito.compras.domain.repository.RoleRepository;
 import api.carrito.compras.domain.repository.UserRepository;
 import api.carrito.compras.domain.repository.VerificationTokenRepository;
@@ -16,6 +18,7 @@ import api.carrito.compras.domain.usecase.MailService;
 import api.carrito.compras.domain.usecase.RefreshTokenService;
 import api.carrito.compras.domain.utils.FormatDates;
 import api.carrito.compras.domain.utils.MailData;
+import api.carrito.compras.infrastructure.persistence.entity.PasswordReset;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.entity.VerificationToken;
@@ -42,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     private static final String PASSWORDS_NOT_MATCH = "Passwords don't match";
     private static final String EMAIL_ALREADY_EXIST = "The email is already in use";
+    private static final String EMAIL_NOT_FOUND = "The email doesn't exist or could not be found";
     private static final String USERNAME_ALREADY_EXIST = "Username is already in use";
     private static final String USERNAME_NOT_FOUND = "The username doesn't exist or could not be found";
     private static final String ROLE_NOT_FOUND = "The role doesn't exist or could not be found";
@@ -51,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordResetRepository passwordResetRepository;
 
     private final MailService mailService;
     private final RefreshTokenService refreshTokenService;
@@ -95,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String generateVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
+        String token = generateRandomUUID();
         Instant instant = Instant.now();
         VerificationToken verificationToken = VerificationToken.builder()
                 .token(token)
@@ -155,5 +160,23 @@ public class AuthServiceImpl implements AuthService {
     public GeneralResponseModel logout(LogoutRequest logoutRequest) {
         refreshTokenService.deleteRefreshToken(logoutRequest.getRefreshToken());
         return generalMapper.responseToGeneralResponseModel(200, "logout", "Logout successfully", null, "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel sendEmailToResetPassword(EmailRequest emailRequest) {
+        User user = userRepository.findByEmailOptional(emailRequest.getEmail()).orElseThrow(() -> new ApiNotFoundException(EMAIL_NOT_FOUND));
+        String token = generateRandomUUID();
+        PasswordReset passwordReset = PasswordReset.builder()
+                .email(user.getEmail())
+                .token(token)
+                .date(Instant.now())
+                .build();
+        passwordResetRepository.save(passwordReset);
+        mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_RESET_PASSWORD, MailData.END_POINT_RESET_PASSWORD, token);
+        return generalMapper.responseToGeneralResponseModel(200, "send email reset password", "Email was sent!", null, "Ok");
+    }
+
+    private String generateRandomUUID() {
+        return UUID.randomUUID().toString();
     }
 }
