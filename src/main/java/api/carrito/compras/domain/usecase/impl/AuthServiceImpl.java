@@ -70,8 +70,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public GeneralResponseModel signup(RegisterUserRequest registerUserRequest) {
-        String username = userRepository.findUsername(registerUserRequest.getUsername());
-        String email = userRepository.findEmail(registerUserRequest.getEmail());
+        String username = userRepository.findByUsername(registerUserRequest.getUsername());
+        String email = userRepository.findByEmail(registerUserRequest.getEmail());
         if(username == null){
             if(email == null){
                 if(registerUserRequest.getPassword().equals(registerUserRequest.getPasswordVerify())){

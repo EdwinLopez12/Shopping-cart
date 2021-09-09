@@ -13,22 +13,22 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
     @Query(
             value = "SELECT u FROM User u WHERE u.username = :username"
     )
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameOptional(String username);
 
     @Query(
             value = "SELECT u FROM User u WHERE u.email = :email"
     )
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailOptional(String email);
 
     @Query(
             value = "SELECT u.username FROM User u WHERE u.username = :username"
     )
-    String findUsername(String username);
+    String findByUsername(String username);
 
     @Query(
             value = "SELECT u.email FROM User u WHERE u.email = :email"
     )
-    String findEmail(String email);
+    String findByEmail(String email);
 
 
 }
