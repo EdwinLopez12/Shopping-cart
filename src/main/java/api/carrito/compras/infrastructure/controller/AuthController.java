@@ -91,6 +91,12 @@ public class AuthController {
         return new ResponseEntity<>(authService.logout(logoutRequest), HttpStatus.OK);
     }
 
+    /**
+     * Send email to reset password.
+     *
+     * @param emailRequest the email request
+     * @return the response entity
+     */
     @PostMapping(value = "/reset-password")
     public ResponseEntity<GeneralResponseModel> sendEmailToResetPassword(@Valid @RequestBody EmailRequest emailRequest) {
 
