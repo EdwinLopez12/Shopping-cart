@@ -23,4 +23,9 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     public RefreshToken save(RefreshToken refreshToken) {
         return refreshTokenJpaRepository.save(refreshToken);
     }
+
+    @Override
+    public void deleteByToken(String token) {
+        refreshTokenJpaRepository.deleteByToken(token);
+    }
 }

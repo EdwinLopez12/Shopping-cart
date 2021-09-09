@@ -2,6 +2,7 @@ package api.carrito.compras.domain.usecase.impl;
 
 import api.carrito.compras.domain.dto.auth.AuthenticationResponse;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
+import api.carrito.compras.domain.dto.auth.LogoutRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
@@ -148,5 +149,11 @@ public class AuthServiceImpl implements AuthService {
                 .username(user.getUsername())
                 .build();
         return generalMapper.responseToGeneralResponseModel(200, "refresh token", "Refresh token refreshed", Collections.singletonList(authenticationResponse), "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel logout(LogoutRequest logoutRequest) {
+        refreshTokenService.deleteRefreshToken(logoutRequest.getRefreshToken());
+        return generalMapper.responseToGeneralResponseModel(200, "logout", "Logout successfully", null, "Ok");
     }
 }

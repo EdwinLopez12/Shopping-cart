@@ -31,4 +31,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void validateRefreshToken(String token) {
         refreshTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
     }
+
+    @Override
+    public void deleteRefreshToken(String token) {
+        refreshTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        refreshTokenRepository.deleteByToken(token);
+    }
 }

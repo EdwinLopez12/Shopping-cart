@@ -1,10 +1,12 @@
 package api.carrito.compras.infrastructure.controller;
 
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
+import api.carrito.compras.domain.dto.auth.LogoutRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.AuthService;
+import api.carrito.compras.domain.usecase.RefreshTokenService;
 import api.carrito.compras.infrastructure.RoutesMapping;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Signup
@@ -74,5 +77,17 @@ public class AuthController {
     public ResponseEntity<GeneralResponseModel> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
 
         return new ResponseEntity<>(authService.refreshToken(refreshTokenRequest), HttpStatus.OK);
+    }
+
+    /**
+     * Logout.
+     *
+     * @param logoutRequest the logout request
+     * @return the response entity
+     */
+    @PostMapping(value = "/logout")
+    public ResponseEntity<GeneralResponseModel> logout(@Valid @RequestBody LogoutRequest logoutRequest){
+
+        return new ResponseEntity<>(authService.logout(logoutRequest), HttpStatus.OK);
     }
 }
