@@ -3,6 +3,7 @@ package api.carrito.compras.domain.usecase;
 import api.carrito.compras.domain.dto.auth.EmailRequest;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.LogoutRequest;
+import api.carrito.compras.domain.dto.auth.PasswordResetRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
@@ -18,4 +19,5 @@ public interface AuthService {
     GeneralResponseModel logout(LogoutRequest logoutRequest);
     GeneralResponseModel sendEmailToResetPassword(EmailRequest emailRequest);
     GeneralResponseModel verifyTokenToResetPassword(String token);
+    GeneralResponseModel resetPassword(PasswordResetRequest passwordResetRequest);
 }

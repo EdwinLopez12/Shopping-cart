@@ -4,6 +4,7 @@ import api.carrito.compras.domain.dto.auth.AuthenticationResponse;
 import api.carrito.compras.domain.dto.auth.EmailRequest;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.LogoutRequest;
+import api.carrito.compras.domain.dto.auth.PasswordResetRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.exception.ApiConflictException;
@@ -45,12 +46,13 @@ public class AuthServiceImpl implements AuthService {
 
     private static final String PASSWORDS_NOT_MATCH = "Passwords don't match";
     private static final String EMAIL_ALREADY_EXIST = "The email is already in use";
-    private static final String EMAIL_NOT_FOUND = "The email doesn't exist or could not be found";
+    private static final String EMAIL_NOT_FOUND = "The email doesn't exist or couldn't be found";
     private static final String USERNAME_ALREADY_EXIST = "Username is already in use";
-    private static final String USERNAME_NOT_FOUND = "The username doesn't exist or could not be found";
-    private static final String ROLE_NOT_FOUND = "The role doesn't exist or could not be found";
-    private static final String TOKEN_NOT_FOUND = "Token doesn't exist or could not be found";
+    private static final String USERNAME_NOT_FOUND = "The username doesn't exist or couldn't be found";
+    private static final String ROLE_NOT_FOUND = "The role doesn't exist or couldn't be found";
+    private static final String TOKEN_NOT_FOUND = "Token doesn't exist or couldn't be found";
     private static final String TOKEN_EXPIRED = "Token expired!";
+    private static final String USER_NOT_FOUND = "User doesn't exist or couldn't be found";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -180,6 +182,21 @@ public class AuthServiceImpl implements AuthService {
     public GeneralResponseModel verifyTokenToResetPassword(String token) {
         passwordResetRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
         return generalMapper.responseToGeneralResponseModel(200, "Verify token", "Verified token", null, "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel resetPassword(PasswordResetRequest passwordResetRequest) {
+        User user = userRepository.findByEmailOptional(passwordResetRequest.getEmail()).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));
+        if(passwordResetRequest.getPassword().equals(passwordResetRequest.getPasswordVerify())){
+            String passwordEncode = passwordEncoder.encode(passwordResetRequest.getPassword());
+            user.setPassword(passwordEncode);
+            user.setUpdatedAt(Instant.now());
+            userRepository.save(user);
+            passwordResetRepository.deleteByEmail(user.getEmail());
+            return generalMapper.responseToGeneralResponseModel(200, "Reset password", "Password has been updated!", null, "Ok");
+        }else{
+            throw new ApiConflictException(PASSWORDS_NOT_MATCH);
+        }
     }
 
     private String generateRandomUUID() {

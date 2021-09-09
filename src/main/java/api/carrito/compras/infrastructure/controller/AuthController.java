@@ -3,6 +3,7 @@ package api.carrito.compras.infrastructure.controller;
 import api.carrito.compras.domain.dto.auth.EmailRequest;
 import api.carrito.compras.domain.dto.auth.LoginUserRequest;
 import api.carrito.compras.domain.dto.auth.LogoutRequest;
+import api.carrito.compras.domain.dto.auth.PasswordResetRequest;
 import api.carrito.compras.domain.dto.auth.RefreshTokenRequest;
 import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,5 +114,11 @@ public class AuthController {
     public ResponseEntity<GeneralResponseModel> verifyTokenToResetPassword(@PathVariable(name = "token") String token) {
 
         return new ResponseEntity<>(authService.verifyTokenToResetPassword(token), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/reset-password")
+    public ResponseEntity<GeneralResponseModel> resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
+
+        return new ResponseEntity<>(authService.resetPassword(passwordResetRequest), HttpStatus.OK);
     }
 }

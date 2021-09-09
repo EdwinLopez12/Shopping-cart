@@ -21,6 +21,11 @@ public class PasswordResetRepositoryImpl implements PasswordResetRepository {
     }
 
     @Override
+    public void deleteByEmail(String email) {
+        passwordResetJpaRepository.deleteByEmail(email);
+    }
+
+    @Override
     public void save(PasswordReset passwordReset) {
         passwordResetJpaRepository.save(passwordReset);
     }
