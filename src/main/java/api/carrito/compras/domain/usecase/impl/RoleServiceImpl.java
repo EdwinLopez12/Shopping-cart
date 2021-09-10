@@ -74,10 +74,15 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public GeneralResponseModel editRole(Long id, RoleRequest roleRequest) {
         Role role = findRole(id);
-        List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
-        role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
-        roleRepository.save(role);
-        return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
+        Optional<Role> optionalRole = roleRepository.findByName(roleRequest.getName());
+        if (!role.getName().equals(roleRequest.getName()) && optionalRole.isPresent()) {
+            throw new ApiConflictException(ROLE_ALREADY_EXIST);
+        } else {
+            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
+            role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
+            roleRepository.save(role);
+            return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
+        }
     }
 
     @Override
@@ -85,7 +90,7 @@ public class RoleServiceImpl implements RoleService {
         Optional<Role> role = roleRepository.findByName(roleRequest.getName());
         if (role.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
-        }else{
+        } else {
             Role newRole = new Role();
             List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
             newRole = roleMapper.roleRequestToRole(roleRequest, newRole, privileges);
