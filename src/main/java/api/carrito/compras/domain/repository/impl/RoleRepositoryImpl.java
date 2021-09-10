@@ -35,6 +35,11 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    public Optional<Role> findById(Long id) {
+        return roleJpaRepository.findById(id);
+    }
+
+    @Override
     public Role save(Role role) {
         return roleJpaRepository.save(role);
     }

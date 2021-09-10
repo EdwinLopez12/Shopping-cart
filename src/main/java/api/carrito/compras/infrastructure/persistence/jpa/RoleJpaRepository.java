@@ -22,4 +22,9 @@ public interface RoleJpaRepository extends JpaRepository<Role, Long> {
             value = "SELECT r FROM Role r WHERE r.name = :name"
     )
     Optional<Role> findByName(String name);
+
+    @Query(
+            value = "SELECT r FROM Role r WHERE r.id = :id"
+    )
+    Optional<Role> findById(Long id);
 }

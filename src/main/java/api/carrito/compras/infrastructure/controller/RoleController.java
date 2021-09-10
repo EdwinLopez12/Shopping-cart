@@ -24,7 +24,7 @@ import javax.validation.Valid;
  * RoleController class
  *
  * @author edwin.lopezb.1297
- * @project compras
+ * @project shoppingcart
  * @since v1.0.0 - sep. 2021
  */
 @RestController

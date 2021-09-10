@@ -18,5 +18,6 @@ public interface RoleRepository {
 
     Page<Role> findAll(Pageable pageable);
     Optional<Role> findByName(String name);
+    Optional<Role> findById(Long id);
     Role save(Role createRole);
 }
