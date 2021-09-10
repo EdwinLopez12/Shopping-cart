@@ -11,6 +11,14 @@ import java.time.Instant;
 
 import static api.carrito.compras.domain.utils.FormatDates.instantToString;
 
+/**
+ * PageableGeneralResponseModel class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 
 @Getter
 @Setter

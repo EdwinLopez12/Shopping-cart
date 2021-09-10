@@ -1,5 +1,13 @@
 package api.carrito.compras.domain.utils;
 
+/**
+ * MailData class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 public final class MailData {
 
     private MailData() {}

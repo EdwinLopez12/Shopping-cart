@@ -20,6 +20,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * ApiUserRolesAndPrivilegesSetUpDataLoader class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - sep. 2021
+ */
+
 @Component
 @AllArgsConstructor
 @Order(1)

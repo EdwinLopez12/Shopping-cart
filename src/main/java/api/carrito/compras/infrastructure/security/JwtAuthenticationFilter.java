@@ -23,6 +23,14 @@ import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * JwtAuthenticationFilter class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

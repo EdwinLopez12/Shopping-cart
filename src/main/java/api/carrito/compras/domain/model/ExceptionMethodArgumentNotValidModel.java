@@ -6,6 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * ExceptionMethodArgumentNotValidModel class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Getter
 @Setter
 @AllArgsConstructor

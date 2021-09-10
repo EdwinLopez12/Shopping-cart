@@ -1,9 +1,13 @@
 package api.carrito.compras.infrastructure;
 
 /**
- * The Routes mapping.
- * Clase para el mapeo de las rutas de toda la aplicación
+ * RoutesMapping class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
  */
+
 public final class RoutesMapping {
     private RoutesMapping(){}
 

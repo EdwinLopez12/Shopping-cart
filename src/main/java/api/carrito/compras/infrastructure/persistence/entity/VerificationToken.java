@@ -17,6 +17,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
+/**
+ * VerificationToken class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Entity
 @Getter
 @Setter

@@ -10,6 +10,14 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * RefreshTokenServiceImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Service
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {

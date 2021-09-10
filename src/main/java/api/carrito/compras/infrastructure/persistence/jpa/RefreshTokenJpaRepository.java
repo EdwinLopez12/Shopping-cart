@@ -8,6 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * RefreshTokenJpaRepository interface
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
 
