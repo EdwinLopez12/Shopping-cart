@@ -1,5 +1,6 @@
 package api.carrito.compras.infrastructure.controller;
 
+import api.carrito.compras.domain.dto.role.RoleRequest;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.RoleService;

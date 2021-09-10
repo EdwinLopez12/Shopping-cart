@@ -1,6 +1,10 @@
 package api.carrito.compras.domain.usecase;
 
+import api.carrito.compras.domain.dto.privilege.PrivilegeRequest;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
+import api.carrito.compras.infrastructure.persistence.entity.Privilege;
+
+import java.util.List;
 
 /**
  * PrivilegeService interface
@@ -14,4 +18,5 @@ import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 public interface PrivilegeService {
 
     PageableGeneralResponseModel getAll(Integer page, Integer size);
+    List<Privilege> privilegesRequestToPrivilege(List<PrivilegeRequest> privileges);
 }

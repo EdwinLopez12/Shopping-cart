@@ -1,6 +1,8 @@
 package api.carrito.compras.domain.usecase.impl;
 
+import api.carrito.compras.domain.dto.privilege.PrivilegeRequest;
 import api.carrito.compras.domain.dto.privilege.PrivilegeResponse;
+import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.exception.PageableDataResponseModel;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 import api.carrito.compras.domain.repository.PrivilegeRepository;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +32,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class PrivilegeServiceImpl implements PrivilegeService {
+
+    private static final String PRIVILEGE_NOT_FOUND = "The privilege doesn't exist or couldn't be found";
 
     private final PrivilegeRepository privilegeRepository;
     private final GeneralResponseModelMapper generalMapper;
@@ -48,5 +53,15 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         PageableDataResponseModel pageableData = generalMapper.pageableResponseToPageableDataResponseModel(type, "listed privileges", privileges, p.getSize(), p.getTotalPages(), p.getTotalElements(), p.getNumber());
 
         return generalMapper.pageableResponseToPageableGeneralResponseModel(p.getPageable().hasPrevious(), p.getPageable().previousOrFirst().getPageNumber(), RoutesMapping.URL_PRIVILEGES_V1, pageableData);
+    }
+
+    @Override
+    public List<Privilege> privilegesRequestToPrivilege(List<PrivilegeRequest> privileges) {
+        List<Privilege> privilegeList = new ArrayList<>();
+        for (PrivilegeRequest privilegeRequest : privileges) {
+            Privilege privilege = privilegeRepository.findByName(privilegeRequest.getName()).orElseThrow(() -> new ApiNotFoundException(PRIVILEGE_NOT_FOUND));
+            privilegeList.add(privilege);
+        }
+        return privilegeList;
     }
 }

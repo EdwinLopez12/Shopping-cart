@@ -1,5 +1,6 @@
 package api.carrito.compras.domain.usecase;
 
+import api.carrito.compras.domain.dto.role.RoleRequest;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 
@@ -13,4 +14,5 @@ import api.carrito.compras.domain.model.GeneralResponseModel;
 public interface RoleService {
     PageableGeneralResponseModel getAllRoles(Integer page, Integer size);
     GeneralResponseModel getRole(Long id);
+    GeneralResponseModel editRole(Long id, RoleRequest roleRequest);
 }

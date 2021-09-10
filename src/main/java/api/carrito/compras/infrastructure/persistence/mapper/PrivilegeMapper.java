@@ -1,5 +1,6 @@
 package api.carrito.compras.infrastructure.persistence.mapper;
 
+import api.carrito.compras.domain.dto.privilege.PrivilegeRequest;
 import api.carrito.compras.domain.dto.privilege.PrivilegeResponse;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import org.springframework.stereotype.Component;

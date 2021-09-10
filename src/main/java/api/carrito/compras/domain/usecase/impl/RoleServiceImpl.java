@@ -1,13 +1,16 @@
 package api.carrito.compras.domain.usecase.impl;
 
+import api.carrito.compras.domain.dto.role.RoleRequest;
 import api.carrito.compras.domain.dto.role.RoleResponse;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.exception.PageableDataResponseModel;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.repository.RoleRepository;
+import api.carrito.compras.domain.usecase.PrivilegeService;
 import api.carrito.compras.domain.usecase.RoleService;
 import api.carrito.compras.infrastructure.RoutesMapping;
+import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.carrito.compras.infrastructure.persistence.mapper.RoleMapper;
@@ -34,6 +37,7 @@ public class RoleServiceImpl implements RoleService {
 
     private static final String ROLE_NOT_FOUND = "The role doesn't exist or couldn't be found";
 
+    private final PrivilegeService privilegeService;
     private final RoleRepository roleRepository;
     private final GeneralResponseModelMapper generalMapper;
     private final RoleMapper roleMapper;
@@ -54,9 +58,22 @@ public class RoleServiceImpl implements RoleService {
         return generalMapper.pageableResponseToPageableGeneralResponseModel(r.getPageable().hasPrevious(), r.getPageable().previousOrFirst().getPageNumber(), RoutesMapping.URL_ROLES_V1, pageableData);
     }
 
+    private Role findRole(Long id) {
+        return roleRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
+    }
+
     @Override
     public GeneralResponseModel getRole(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
-        return generalMapper.responseToGeneralResponseModel(200, "get role", "Role found", Collections.singletonList(role), "Ok");
+        Role role = findRole(id);
+        return generalMapper.responseToGeneralResponseModel(200, "get role", "Role found", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel editRole(Long id, RoleRequest roleRequest) {
+        Role role = findRole(id);
+        List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
+        role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
+        roleRepository.save(role);
+        return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
     }
 }
