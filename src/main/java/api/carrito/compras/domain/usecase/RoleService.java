@@ -15,4 +15,5 @@ public interface RoleService {
     PageableGeneralResponseModel getAllRoles(Integer page, Integer size);
     GeneralResponseModel getRole(Long id);
     GeneralResponseModel editRole(Long id, RoleRequest roleRequest);
+    GeneralResponseModel addRole(RoleRequest roleRequest);
 }

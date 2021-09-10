@@ -2,6 +2,7 @@ package api.carrito.compras.domain.usecase.impl;
 
 import api.carrito.compras.domain.dto.role.RoleRequest;
 import api.carrito.compras.domain.dto.role.RoleResponse;
+import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.exception.PageableDataResponseModel;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * RoleServiceImpl class
@@ -36,6 +38,7 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private static final String ROLE_NOT_FOUND = "The role doesn't exist or couldn't be found";
+    private static final String ROLE_ALREADY_EXIST = "The role already exist";
 
     private final PrivilegeService privilegeService;
     private final RoleRepository roleRepository;
@@ -75,5 +78,19 @@ public class RoleServiceImpl implements RoleService {
         role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
         roleRepository.save(role);
         return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel addRole(RoleRequest roleRequest) {
+        Optional<Role> role = roleRepository.findByName(roleRequest.getName());
+        if (role.isPresent()) {
+            throw new ApiConflictException(ROLE_ALREADY_EXIST);
+        }else{
+            Role newRole = new Role();
+            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
+            newRole = roleMapper.roleRequestToRole(roleRequest, newRole, privileges);
+            roleRepository.save(newRole);
+            return generalMapper.responseToGeneralResponseModel(200, "add role", "Role created", Collections.singletonList(roleMapper.roleToRolesResponse(newRole)), "Ok");
+        }
     }
 }
