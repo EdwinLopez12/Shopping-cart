@@ -36,7 +36,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
 
     @Override
-    public PageableGeneralResponseModel getAll(Integer page, Integer size) {
+    public PageableGeneralResponseModel getAllRoles(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
         Page<Role> r = roleRepository.findAll(pageable);
         return pageable(r, "get all");

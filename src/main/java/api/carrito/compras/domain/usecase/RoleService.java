@@ -10,5 +10,5 @@ import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
  * @since v1.0.0 - sep. 2021
  */
 public interface RoleService {
-    PageableGeneralResponseModel getAll(Integer page, Integer size);
+    PageableGeneralResponseModel getAllRoles(Integer page, Integer size);
 }
