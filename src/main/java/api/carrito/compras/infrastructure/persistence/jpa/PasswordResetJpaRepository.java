@@ -17,8 +17,5 @@ public interface PasswordResetJpaRepository extends JpaRepository<PasswordReset,
     Optional<PasswordReset> findByToken(String token);
 
     @Transactional
-    @Query(
-            value = "DELETE FROM PasswordReset pr WHERE pr.email = :email"
-    )
     void deleteByEmail(String email);
 }
