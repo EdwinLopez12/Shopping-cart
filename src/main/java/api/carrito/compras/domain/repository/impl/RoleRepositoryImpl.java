@@ -4,6 +4,8 @@ import api.carrito.compras.domain.repository.RoleRepository;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.jpa.RoleJpaRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -21,6 +23,11 @@ import java.util.Optional;
 public class RoleRepositoryImpl implements RoleRepository {
 
     private final RoleJpaRepository roleJpaRepository;
+
+    @Override
+    public Page<Role> findAll(Pageable pageable) {
+        return roleJpaRepository.findAll(pageable);
+    }
 
     @Override
     public Optional<Role> findByName(String name) {
