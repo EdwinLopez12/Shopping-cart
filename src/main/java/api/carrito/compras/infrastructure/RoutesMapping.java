@@ -20,4 +20,5 @@ public final class RoutesMapping {
     public static final String URL_INVOICES_V1 = "/api/v1/invoices";
     public static final String URL_PAYMENTS_V1 = "/api/v1/payments";
     public static final String URL_PRIVILEGES_V1 = "/api/v1/privileges";
+    public static final String URL_ROLES_V1 = "/api/v1/roles";
 }
