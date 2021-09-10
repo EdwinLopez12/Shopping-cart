@@ -19,6 +19,7 @@ public class PrivilegeMapper {
 
     public PrivilegeResponse privilegeToPrivilegeResponse(Privilege privilege){
         PrivilegeResponse privilegeResponse = new PrivilegeResponse();
+        if (privilege.getId() != null) privilegeResponse.setId(privilege.getId());
         if (privilege.getName() != null) privilegeResponse.setName(privilege.getName());
         return privilegeResponse;
     }

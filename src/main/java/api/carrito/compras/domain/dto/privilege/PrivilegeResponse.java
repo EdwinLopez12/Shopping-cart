@@ -23,5 +23,8 @@ import lombok.Setter;
 public class PrivilegeResponse {
 
     @JsonProperty
+    private Long id;
+
+    @JsonProperty
     private String name;
 }
