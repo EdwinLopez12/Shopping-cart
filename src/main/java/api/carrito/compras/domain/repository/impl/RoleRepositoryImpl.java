@@ -40,6 +40,16 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    public Integer countUserRoles(Long id) {
+        return roleJpaRepository.countUserRoles(id);
+    }
+
+    @Override
+    public void deleteRole(Long id) {
+        roleJpaRepository.deleteById(id);
+    }
+
+    @Override
     public Role save(Role role) {
         return roleJpaRepository.save(role);
     }

@@ -20,4 +20,6 @@ public interface RoleRepository {
     Optional<Role> findByName(String name);
     Optional<Role> findById(Long id);
     Role save(Role createRole);
+    Integer countUserRoles(Long id);
+    void deleteRole(Long id);
 }

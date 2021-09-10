@@ -39,6 +39,7 @@ public class RoleServiceImpl implements RoleService {
 
     private static final String ROLE_NOT_FOUND = "The role doesn't exist or couldn't be found";
     private static final String ROLE_ALREADY_EXIST = "The role already exist";
+    private static final String ROLE_HAS_USERS = "The role can't be deleted because it's used by at least one user. Try assigning a new role to the user (s) and try deleting again.";
 
     private final PrivilegeService privilegeService;
     private final RoleRepository roleRepository;
@@ -96,6 +97,17 @@ public class RoleServiceImpl implements RoleService {
             newRole = roleMapper.roleRequestToRole(roleRequest, newRole, privileges);
             roleRepository.save(newRole);
             return generalMapper.responseToGeneralResponseModel(200, "add role", "Role created", Collections.singletonList(roleMapper.roleToRolesResponse(newRole)), "Ok");
+        }
+    }
+
+    @Override
+    public GeneralResponseModel deleteRole(Long id) {
+        Role role = findRole(id);
+        if (roleRepository.countUserRoles(role.getId()) == 0){
+            roleRepository.deleteRole(id);
+            return generalMapper.responseToGeneralResponseModel(200, "delete role", "Role deleted", null, "Ok");
+        }else{
+            throw new ApiConflictException(ROLE_HAS_USERS);
         }
     }
 }
