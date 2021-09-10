@@ -32,5 +32,6 @@ public class RoleRequest {
     @NotBlank(message = "Role name is required")
     @Length(min = 3, max = 255, message = "Role name should be greater than or equal to 3")
     private String name;
+
     private List<@Valid PrivilegeRequest> privileges;
 }
