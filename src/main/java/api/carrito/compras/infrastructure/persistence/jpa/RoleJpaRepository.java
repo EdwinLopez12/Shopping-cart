@@ -27,9 +27,4 @@ public interface RoleJpaRepository extends JpaRepository<Role, Long> {
             value = "SELECT r FROM Role r WHERE r.id = :id"
     )
     Optional<Role> findById(Long id);
-
-    @Query(
-            value = "SELECT COUNT(r.users) FROM Role r WHERE r.id = :id"
-    )
-    Integer countUserRoles(Long id);
 }

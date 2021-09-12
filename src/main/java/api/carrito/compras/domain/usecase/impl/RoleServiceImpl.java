@@ -13,6 +13,7 @@ import api.carrito.compras.domain.usecase.RoleService;
 import api.carrito.compras.infrastructure.RoutesMapping;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
+import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.carrito.compras.infrastructure.persistence.mapper.RoleMapper;
 import lombok.AllArgsConstructor;
@@ -103,7 +104,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public GeneralResponseModel deleteRole(Long id) {
         Role role = findRole(id);
-        if (roleRepository.countUserRoles(role.getId()) == 0){
+        List<User> usersRole = role.getUsers();
+        if (usersRole.isEmpty()){
             roleRepository.deleteRole(id);
             return generalMapper.responseToGeneralResponseModel(200, "delete role", "Role deleted", null, "Ok");
         }else{
