@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -82,6 +83,7 @@ public class RoleServiceImpl implements RoleService {
         } else {
             List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
             role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
+            role.setUpdatedAt(Instant.now());
             roleRepository.save(role);
             return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
         }
@@ -96,6 +98,7 @@ public class RoleServiceImpl implements RoleService {
             Role newRole = new Role();
             List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
             newRole = roleMapper.roleRequestToRole(roleRequest, newRole, privileges);
+            newRole.setCreatedAt(Instant.now());
             roleRepository.save(newRole);
             return generalMapper.responseToGeneralResponseModel(200, "add role", "Role created", Collections.singletonList(roleMapper.roleToRolesResponse(newRole)), "Ok");
         }

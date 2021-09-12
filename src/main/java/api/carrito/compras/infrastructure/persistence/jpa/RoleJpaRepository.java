@@ -19,12 +19,17 @@ import java.util.Optional;
 public interface RoleJpaRepository extends JpaRepository<Role, Long> {
 
     @Query(
-            value = "SELECT r FROM Role r WHERE r.name = :name"
+            value = "SELECT r FROM Role r WHERE r.name = :name AND r.deletedAt IS NULL"
     )
     Optional<Role> findByName(String name);
 
     @Query(
-            value = "SELECT r FROM Role r WHERE r.id = :id"
+            value = "SELECT r FROM Role r WHERE r.id = :id AND r.deletedAt IS NULL"
     )
     Optional<Role> findById(Long id);
+
+    @Query(
+            value = "UPDATE Role r SET r.deletedAt = CURRENT_TIMESTAMP"
+    )
+    void deleteById(Long id);
 }
