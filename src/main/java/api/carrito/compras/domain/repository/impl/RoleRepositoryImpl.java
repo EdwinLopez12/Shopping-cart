@@ -40,11 +40,6 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public void deleteRole(Long id) {
-        roleJpaRepository.deleteById(id);
-    }
-
-    @Override
     public Role save(Role role) {
         return roleJpaRepository.save(role);
     }

@@ -109,7 +109,8 @@ public class RoleServiceImpl implements RoleService {
         Role role = findRole(id);
         List<User> usersRole = role.getUsers();
         if (usersRole.isEmpty()){
-            roleRepository.deleteRole(id);
+            role.setDeletedAt(Instant.now());
+            roleRepository.save(role);
             return generalMapper.responseToGeneralResponseModel(200, "delete role", "Role deleted", null, "Ok");
         }else{
             throw new ApiConflictException(ROLE_HAS_USERS);

@@ -27,9 +27,4 @@ public interface RoleJpaRepository extends JpaRepository<Role, Long> {
             value = "SELECT r FROM Role r WHERE r.id = :id AND r.deletedAt IS NULL"
     )
     Optional<Role> findById(Long id);
-
-    @Query(
-            value = "UPDATE Role r SET r.deletedAt = CURRENT_TIMESTAMP"
-    )
-    void deleteById(Long id);
 }
