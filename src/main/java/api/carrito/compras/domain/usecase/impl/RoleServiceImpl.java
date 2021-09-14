@@ -2,6 +2,7 @@ package api.carrito.compras.domain.usecase.impl;
 
 import api.carrito.compras.domain.dto.role.RoleRequest;
 import api.carrito.compras.domain.dto.role.RoleResponse;
+import api.carrito.compras.domain.dto.user.UserResponse;
 import api.carrito.compras.domain.exception.ApiConflictException;
 import api.carrito.compras.domain.exception.ApiNotFoundException;
 import api.carrito.compras.domain.exception.PageableDataResponseModel;
@@ -16,6 +17,7 @@ import api.carrito.compras.infrastructure.persistence.entity.Role;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 import api.carrito.compras.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.carrito.compras.infrastructure.persistence.mapper.RoleMapper;
+import api.carrito.compras.infrastructure.persistence.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +49,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final GeneralResponseModelMapper generalMapper;
     private final RoleMapper roleMapper;
+    private final UserMapper userMapper;
 
     @Override
     public PageableGeneralResponseModel getAllRoles(Integer page, Integer size) {
@@ -115,5 +118,13 @@ public class RoleServiceImpl implements RoleService {
         }else{
             throw new ApiConflictException(ROLE_HAS_USERS);
         }
+    }
+
+    @Override
+    public GeneralResponseModel getAllUsers(Long id) {
+        Role role = findRole(id);
+        List<User> users = role.getUsers();
+        List<UserResponse> usersResponse = userMapper.userListToUserResponseList(users);
+        return generalMapper.responseToGeneralResponseModel(200, "users role", "Listed users", Collections.singletonList(usersResponse), "Ok");
     }
 }

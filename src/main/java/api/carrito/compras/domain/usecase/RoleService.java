@@ -17,4 +17,5 @@ public interface RoleService {
     GeneralResponseModel editRole(Long id, RoleRequest roleRequest);
     GeneralResponseModel addRole(RoleRequest roleRequest);
     GeneralResponseModel deleteRole(Long id);
+    GeneralResponseModel getAllUsers(Long id);
 }

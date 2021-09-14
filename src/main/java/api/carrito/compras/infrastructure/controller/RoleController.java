@@ -44,7 +44,7 @@ public class RoleController {
      */
     @PreAuthorize("hasAuthority('BROWSE_ROLE')")
     @GetMapping
-    public ResponseEntity<PageableGeneralResponseModel> getAllRoles(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size){
+    public ResponseEntity<PageableGeneralResponseModel> getAllRoles(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
         return new ResponseEntity<>(roleService.getAllRoles(page, size), HttpStatus.OK);
     }
@@ -100,5 +100,19 @@ public class RoleController {
     public ResponseEntity<GeneralResponseModel> deleteRole(@PathVariable(name = "id") Long id) {
 
         return new ResponseEntity<>(roleService.deleteRole(id), HttpStatus.OK);
+    }
+
+
+    /**
+     * Get all users.
+     *
+     * @param id the id
+     * @return the all users
+     */
+    @PreAuthorize("hasAuthority('BROWSE_ROLE')")
+    @GetMapping(value = "/{id}/users")
+    public ResponseEntity<GeneralResponseModel> getAllUsers(@PathVariable(name = "id") Long id) {
+
+        return new ResponseEntity<>(roleService.getAllUsers(id), HttpStatus.OK);
     }
 }

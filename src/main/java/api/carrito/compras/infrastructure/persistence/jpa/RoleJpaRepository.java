@@ -31,7 +31,7 @@ public interface RoleJpaRepository extends JpaRepository<Role, Long> {
     Optional<Role> findById(Long id);
 
     @Query(
-            value = "SELECT r FROM Role r WHERE r.deletedAt IS NULL";
+            value = "SELECT r FROM Role r WHERE r.deletedAt IS NULL"
     )
     Page<Role> findAll(Pageable pageable);
 }
