@@ -1,6 +1,8 @@
 package api.carrito.compras.infrastructure.persistence.jpa;
 
 import api.carrito.compras.infrastructure.persistence.entity.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,4 +29,9 @@ public interface RoleJpaRepository extends JpaRepository<Role, Long> {
             value = "SELECT r FROM Role r WHERE r.id = :id AND r.deletedAt IS NULL"
     )
     Optional<Role> findById(Long id);
+
+    @Query(
+            value = "SELECT r FROM Role r WHERE r.deletedAt IS NULL";
+    )
+    Page<Role> findAll(Pageable pageable);
 }
