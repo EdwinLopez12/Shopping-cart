@@ -2,6 +2,7 @@ package api.carrito.compras.infrastructure.controller;
 
 import api.carrito.compras.domain.dto.user.UserRolesRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
+import api.carrito.compras.domain.usecase.UserService;
 import api.carrito.compras.infrastructure.RoutesMapping;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,11 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class UserController {
 
+    private final UserService userService;
+
     @PutMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> updateRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
 
-        return new ResponseEntity<>(userService.updateRoles(userRolesRequest), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateRoles(userRolesRequest, id), HttpStatus.OK);
     }
 }
