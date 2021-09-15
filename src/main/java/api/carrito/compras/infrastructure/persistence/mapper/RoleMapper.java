@@ -41,7 +41,7 @@ public class RoleMapper {
     }
 
     public Role roleRequestToRole(RoleWithPrivilegesRequest roleWithPrivilegesRequest, Role role, List<Privilege> privileges) {
-        if (roleWithPrivilegesRequest.getName() != null) role.setName(roleWithPrivilegesRequest.getName());
+        if (roleWithPrivilegesRequest.getName() != null) role.setName(roleWithPrivilegesRequest.getName().getName());
         if (!privileges.isEmpty()) role.setPrivileges(privileges);
         return role;
     }

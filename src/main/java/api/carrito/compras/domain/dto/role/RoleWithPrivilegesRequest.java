@@ -1,16 +1,13 @@
 package api.carrito.compras.domain.dto.role;
 
 import api.carrito.compras.domain.dto.privilege.PrivilegeRequest;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -28,10 +25,7 @@ import java.util.List;
 @Builder
 public class RoleWithPrivilegesRequest {
 
-    @JsonProperty
-    @NotBlank(message = "Role name is required")
-    @Length(min = 3, max = 255, message = "Role name should be greater than or equal to 3")
-    private String name;
+    private RoleRequest name;
 
     private List<@Valid PrivilegeRequest> privileges;
 }

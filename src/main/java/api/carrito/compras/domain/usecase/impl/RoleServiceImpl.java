@@ -80,7 +80,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public GeneralResponseModel editRole(Long id, RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
         Role role = findRole(id);
-        Optional<Role> optionalRole = roleRepository.findByName(roleWithPrivilegesRequest.getName());
+        Optional<Role> optionalRole = roleRepository.findByName(roleWithPrivilegesRequest.getName().getName());
         if (!role.getName().equals(roleWithPrivilegesRequest.getName()) && optionalRole.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
         } else {
@@ -94,7 +94,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public GeneralResponseModel addRole(RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
-        Optional<Role> role = roleRepository.findByName(roleWithPrivilegesRequest.getName());
+        Optional<Role> role = roleRepository.findByName(roleWithPrivilegesRequest.getName().getName());
         if (role.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
         } else {
