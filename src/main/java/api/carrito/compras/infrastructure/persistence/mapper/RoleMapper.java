@@ -1,7 +1,7 @@
 package api.carrito.compras.infrastructure.persistence.mapper;
 
 import api.carrito.compras.domain.dto.privilege.PrivilegeResponse;
-import api.carrito.compras.domain.dto.role.RoleRequest;
+import api.carrito.compras.domain.dto.role.RoleWithPrivilegesRequest;
 import api.carrito.compras.domain.dto.role.RoleResponse;
 import api.carrito.compras.infrastructure.persistence.entity.Privilege;
 import api.carrito.compras.infrastructure.persistence.entity.Role;
@@ -40,8 +40,8 @@ public class RoleMapper {
         return roles;
     }
 
-    public Role roleRequestToRole(RoleRequest roleRequest, Role role, List<Privilege> privileges) {
-        if (roleRequest.getName() != null) role.setName(roleRequest.getName());
+    public Role roleRequestToRole(RoleWithPrivilegesRequest roleWithPrivilegesRequest, Role role, List<Privilege> privileges) {
+        if (roleWithPrivilegesRequest.getName() != null) role.setName(roleWithPrivilegesRequest.getName());
         if (!privileges.isEmpty()) role.setPrivileges(privileges);
         return role;
     }

@@ -1,6 +1,6 @@
 package api.carrito.compras.infrastructure.controller;
 
-import api.carrito.compras.domain.dto.role.RoleRequest;
+import api.carrito.compras.domain.dto.role.RoleWithPrivilegesRequest;
 import api.carrito.compras.domain.exception.PageableGeneralResponseModel;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.domain.usecase.RoleService;
@@ -66,27 +66,27 @@ public class RoleController {
      * Edit role.
      *
      * @param id          the id
-     * @param roleRequest the role request
+     * @param roleWithPrivilegesRequest the role request
      * @return the response entity
      */
     @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @PutMapping(value = "/{id}")
-    public ResponseEntity<GeneralResponseModel> editRole(@PathVariable(name = "id") Long id, @Valid @RequestBody RoleRequest roleRequest) {
+    public ResponseEntity<GeneralResponseModel> editRole(@PathVariable(name = "id") Long id, @Valid @RequestBody RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
 
-        return new ResponseEntity<>(roleService.editRole(id, roleRequest), HttpStatus.OK);
+        return new ResponseEntity<>(roleService.editRole(id, roleWithPrivilegesRequest), HttpStatus.OK);
     }
 
     /**
      * Add role.
      *
-     * @param roleRequest the role request
+     * @param roleWithPrivilegesRequest the role request
      * @return the response entity
      */
     @PreAuthorize("hasAuthority('ADD_ROLE')")
     @PostMapping
-    public ResponseEntity<GeneralResponseModel> addRole(@Valid @RequestBody RoleRequest roleRequest) {
+    public ResponseEntity<GeneralResponseModel> addRole(@Valid @RequestBody RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
 
-        return new ResponseEntity<>(roleService.addRole(roleRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(roleService.addRole(roleWithPrivilegesRequest), HttpStatus.CREATED);
     }
 
     /**

@@ -1,6 +1,6 @@
 package api.carrito.compras.domain.usecase.impl;
 
-import api.carrito.compras.domain.dto.role.RoleRequest;
+import api.carrito.compras.domain.dto.role.RoleWithPrivilegesRequest;
 import api.carrito.compras.domain.dto.role.RoleResponse;
 import api.carrito.compras.domain.dto.user.UserResponse;
 import api.carrito.compras.domain.exception.ApiConflictException;
@@ -78,14 +78,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public GeneralResponseModel editRole(Long id, RoleRequest roleRequest) {
+    public GeneralResponseModel editRole(Long id, RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
         Role role = findRole(id);
-        Optional<Role> optionalRole = roleRepository.findByName(roleRequest.getName());
-        if (!role.getName().equals(roleRequest.getName()) && optionalRole.isPresent()) {
+        Optional<Role> optionalRole = roleRepository.findByName(roleWithPrivilegesRequest.getName());
+        if (!role.getName().equals(roleWithPrivilegesRequest.getName()) && optionalRole.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
         } else {
-            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
-            role = roleMapper.roleRequestToRole(roleRequest, role, privileges);
+            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleWithPrivilegesRequest.getPrivileges());
+            role = roleMapper.roleRequestToRole(roleWithPrivilegesRequest, role, privileges);
             role.setUpdatedAt(Instant.now());
             roleRepository.save(role);
             return generalMapper.responseToGeneralResponseModel(200, "edit role", "Edited role", Collections.singletonList(roleMapper.roleToRolesResponse(role)), "Ok");
@@ -93,14 +93,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public GeneralResponseModel addRole(RoleRequest roleRequest) {
-        Optional<Role> role = roleRepository.findByName(roleRequest.getName());
+    public GeneralResponseModel addRole(RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
+        Optional<Role> role = roleRepository.findByName(roleWithPrivilegesRequest.getName());
         if (role.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
         } else {
             Role newRole = new Role();
-            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleRequest.getPrivileges());
-            newRole = roleMapper.roleRequestToRole(roleRequest, newRole, privileges);
+            List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleWithPrivilegesRequest.getPrivileges());
+            newRole = roleMapper.roleRequestToRole(roleWithPrivilegesRequest, newRole, privileges);
             newRole.setCreatedAt(Instant.now());
             roleRepository.save(newRole);
             return generalMapper.responseToGeneralResponseModel(200, "add role", "Role created", Collections.singletonList(roleMapper.roleToRolesResponse(newRole)), "Ok");

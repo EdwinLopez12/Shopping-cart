@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
- * RoleRequest class
+ * RoleWithPrivilegesRequest class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -26,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoleRequest {
+public class RoleWithPrivilegesRequest {
 
     @JsonProperty
     @NotBlank(message = "Role name is required")
