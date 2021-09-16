@@ -7,6 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * UserJpaRepository interface
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 public interface UserJpaRepository extends JpaRepository<User, Long> {
 
@@ -19,6 +27,11 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
             value = "SELECT u FROM User u WHERE u.email = :email"
     )
     Optional<User> findByEmailOptional(String email);
+
+    @Query(
+            value = "SELECT u FROM User u WHERE u.id = :id"
+    )
+    Optional<User> findById(Long id);
 
     @Query(
             value = "SELECT u.username FROM User u WHERE u.username = :username"

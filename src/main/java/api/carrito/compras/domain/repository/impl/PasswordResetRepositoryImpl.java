@@ -8,6 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * PasswordResetRepositoryImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 @AllArgsConstructor
 public class PasswordResetRepositoryImpl implements PasswordResetRepository {

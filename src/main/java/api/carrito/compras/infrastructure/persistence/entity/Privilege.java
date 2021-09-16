@@ -16,6 +16,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * Privilege class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Entity
 @Getter
 @Setter

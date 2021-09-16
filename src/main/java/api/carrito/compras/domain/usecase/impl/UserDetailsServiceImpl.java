@@ -17,6 +17,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * UserDetailsServiceImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {

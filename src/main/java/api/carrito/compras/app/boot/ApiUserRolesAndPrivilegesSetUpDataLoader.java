@@ -20,6 +20,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * ApiUserRolesAndPrivilegesSetUpDataLoader class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - sep. 2021
+ */
+
 @Component
 @AllArgsConstructor
 @Order(1)
@@ -43,13 +51,14 @@ public class ApiUserRolesAndPrivilegesSetUpDataLoader implements ApplicationList
         Privilege browsePrivilege = createPrivilegeIfNotFound("BROWSE_PRIVILEGE");
         Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
 
+        Privilege browseUser = createPrivilegeIfNotFound("BROWSE_USER");
         Privilege readUser = createPrivilegeIfNotFound("READ_USER");
         Privilege editUser = createPrivilegeIfNotFound("EDIT_USER");
 
         List<Privilege> adminPrivileges = Arrays.asList(
                 browseRole, readRole, editRole, addRole, deleteRole,
                 browsePrivilege, readPrivilege,
-                readUser, editUser
+                browseUser, readUser, editUser
         );
 
         List<Privilege> userPrivileges = Arrays.asList(

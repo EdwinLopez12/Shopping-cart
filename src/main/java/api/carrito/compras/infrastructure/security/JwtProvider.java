@@ -23,6 +23,14 @@ import java.util.Date;
 
 import static io.jsonwebtoken.Jwts.parser;
 
+/**
+ * JwtProvider class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Service
 public class JwtProvider {
 

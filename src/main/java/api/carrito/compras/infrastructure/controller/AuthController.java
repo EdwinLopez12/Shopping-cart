@@ -23,8 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Authentication controller
+ * AuthController class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
  */
+
 @RestController
 @RequestMapping(value = RoutesMapping.URL_AUTH_V1)
 @AllArgsConstructor

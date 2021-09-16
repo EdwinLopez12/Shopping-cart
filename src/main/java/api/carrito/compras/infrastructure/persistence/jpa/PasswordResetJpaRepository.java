@@ -8,6 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * PasswordResetJpaRepository interface
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 public interface PasswordResetJpaRepository extends JpaRepository<PasswordReset, Long> {
 

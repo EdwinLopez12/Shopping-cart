@@ -11,6 +11,14 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * PasswordResetRequest class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - sep. 2021
+ */
+
 @Getter
 @Setter
 @AllArgsConstructor

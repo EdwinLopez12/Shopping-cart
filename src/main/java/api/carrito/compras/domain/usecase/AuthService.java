@@ -9,6 +9,14 @@ import api.carrito.compras.domain.dto.auth.RegisterUserRequest;
 import api.carrito.compras.domain.model.GeneralResponseModel;
 import api.carrito.compras.infrastructure.persistence.entity.User;
 
+/**
+ * AuthService interface
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 public interface AuthService {
 
     GeneralResponseModel signup(RegisterUserRequest registerUserRequest);

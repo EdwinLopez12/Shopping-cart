@@ -6,8 +6,13 @@ import java.time.Instant;
 import java.util.Date;
 
 /**
- * The Format dates.
+ * FormatDates class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
  */
+
 public class FormatDates {
 
     private FormatDates() {

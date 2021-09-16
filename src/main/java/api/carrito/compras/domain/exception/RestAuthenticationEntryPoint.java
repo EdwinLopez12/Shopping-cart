@@ -11,6 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * RestAuthenticationEntryPoint class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
+
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

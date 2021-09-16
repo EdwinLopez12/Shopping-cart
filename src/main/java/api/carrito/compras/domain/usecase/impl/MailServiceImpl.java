@@ -15,6 +15,14 @@ import org.springframework.stereotype.Service;
 import static api.carrito.compras.infrastructure.RoutesMapping.FULL_BASE_V1;
 import static api.carrito.compras.infrastructure.RoutesMapping.URL_AUTH_V1;
 
+/**
+ * MailServiceImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Service
 @AllArgsConstructor
 public class MailServiceImpl implements MailService {

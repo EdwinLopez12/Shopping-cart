@@ -39,6 +39,14 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
 
+/**
+ * AuthServiceImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Service
 @AllArgsConstructor
 @Slf4j

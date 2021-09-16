@@ -7,6 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * VerificationTokenJpaRepository interface
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 public interface VerificationTokenJpaRepository extends JpaRepository<VerificationToken, Long> {
 

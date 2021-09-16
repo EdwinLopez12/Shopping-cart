@@ -8,6 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * UserRepositoryImpl class
+ *
+ * @author edwin.lopezb.1297
+ * @project shoppingcart
+ * @since v1.0.0 - aug. 2021
+ */
+
 @Repository
 @AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
@@ -22,6 +30,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByEmailOptional(String email) {
         return userJpaRepository.findByEmailOptional(email);
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userJpaRepository.findById(id);
     }
 
     @Override
