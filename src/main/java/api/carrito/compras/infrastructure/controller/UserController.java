@@ -7,6 +7,8 @@ import api.carrito.compras.infrastructure.RoutesMapping;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +31,17 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @PutMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> updateRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
 
         return new ResponseEntity<>(userService.updateRoles(userRolesRequest, id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EDIT_ROLE')")
+    @DeleteMapping(value = "/{id}/roles")
+    public ResponseEntity<GeneralResponseModel> deleteRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
+
+        return new ResponseEntity<>(userService.deleteRoles(userRolesRequest, id), HttpStatus.OK);
     }
 }

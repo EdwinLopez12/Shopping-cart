@@ -13,4 +13,5 @@ import api.carrito.compras.domain.model.GeneralResponseModel;
 public interface UserService {
 
     GeneralResponseModel updateRoles(UserRolesRequest userRolesRequest, Long id);
+    GeneralResponseModel deleteRoles(UserRolesRequest userRolesRequest, Long id);
 }

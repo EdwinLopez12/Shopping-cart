@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GeneralResponseModel updateRoles(UserRolesRequest userRolesRequest, Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));
+        User user = findUser(id);
         if (userRolesRequest.getRole().size() == 1) {
                 setRol(userRolesRequest.getRole().get(0), user);
         }else{
@@ -45,8 +45,27 @@ public class UserServiceImpl implements UserService {
         return generalMapper.responseToGeneralResponseModel(200, "update user roles", "Roles updated", null, "Ok");
     }
 
+    @Override
+    public GeneralResponseModel deleteRoles(UserRolesRequest userRolesRequest, Long id) {
+        User user = findUser(id);
+        if (userRolesRequest.getRole().size() == 1) {
+            removeRole(userRolesRequest.getRole().get(0), user);
+        }else{
+            removeRoles(userRolesRequest.getRole(), user);
+        }
+        return generalMapper.responseToGeneralResponseModel(200, "update user roles", "Roles updated", null, "Ok");
+    }
+
+    private User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));
+    }
+
+    private Role findRole(RoleRequest roleRequest) {
+        return roleRepository.findByName(roleRequest.getName()).orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
+    }
+
     private void setRol(RoleRequest roleRequest, User user) {
-        Role role = roleRepository.findByName(roleRequest.getName()).orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
+        Role role = findRole(roleRequest);
         verifyRoleInUser(role, user.getRoles());
         user.addRole(role);
         userRepository.save(user);
@@ -54,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     private void setRoles(List<RoleRequest> roleRequestList, User user) {
         for (RoleRequest roleRequest : roleRequestList){
-            Role role = roleRepository.findByName(roleRequest.getName()).orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
+            Role role = findRole(roleRequest);
             verifyRoleInUser(role, user.getRoles());
             user.addRole(role);
         }
@@ -65,5 +84,19 @@ public class UserServiceImpl implements UserService {
         for (Role rol : roles){
             if (rol.getName().equals(role.getName())) throw new ApiConflictException(ROLE_ALREADY_ASSIGNED);
         }
+    }
+
+    private void removeRole(RoleRequest roleRequest, User user) {
+        Role role = findRole(roleRequest);
+        user.removeRole(role);
+        userRepository.save(user);
+    }
+
+    private void removeRoles(List<RoleRequest> roleRequestList, User user) {
+        for (RoleRequest roleRequest : roleRequestList) {
+            Role role = findRole(roleRequest);
+            user.removeRole(role);
+        }
+        userRepository.save(user);
     }
 }
