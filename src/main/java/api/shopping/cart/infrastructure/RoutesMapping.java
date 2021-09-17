@@ -22,4 +22,5 @@ public final class RoutesMapping {
     public static final String URL_PRIVILEGES_V1 = "/api/v1/privileges";
     public static final String URL_ROLES_V1 = "/api/v1/roles";
     public static final String URL_USERS_V1 = "/api/v1/users";
+    public static final String URL_TOWNS_V1 = "/api/v1/towns";
 }
