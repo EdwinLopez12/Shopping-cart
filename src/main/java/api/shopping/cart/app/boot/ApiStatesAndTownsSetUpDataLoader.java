@@ -1,6 +1,9 @@
 package api.shopping.cart.app.boot;
 
+import api.shopping.cart.domain.exception.ApiNotFoundException;
+import api.shopping.cart.domain.repository.CountryRepository;
 import api.shopping.cart.domain.repository.StateRepository;
+import api.shopping.cart.infrastructure.persistence.entity.Country;
 import api.shopping.cart.infrastructure.persistence.entity.State;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -26,15 +29,17 @@ import java.io.File;
  */
 @Component
 @AllArgsConstructor
-@Order(2)
+@Order(3)
 public class ApiStatesAndTownsSetUpDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private final StateRepository stateRepository;
+    private final CountryRepository countryRepository;
 
     @SneakyThrows
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        Country country = countryRepository.findByName("Colombia").orElseThrow(() -> new ApiNotFoundException("Country no found"));
         File jsonFile = ResourceUtils.getFile("classpath:static/Colombia/StatesAndTownsColombia.json");
         // Read data
         String json = FileUtils.readFileToString(jsonFile);
@@ -53,6 +58,7 @@ public class ApiStatesAndTownsSetUpDataLoader implements ApplicationListener<Con
                     .stateName(stateName)
                     .daneCodeTown(daneCodeTown)
                     .townName(townName)
+                    .country(country)
                     .build();
 
             stateRepository.save(state);

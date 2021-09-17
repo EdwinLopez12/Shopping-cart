@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -41,4 +43,7 @@ public class State {
     private String daneCodeTown;
 
     private String townName;
+
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Country.class)
+    private Country country;
 }

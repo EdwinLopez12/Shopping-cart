@@ -2,6 +2,8 @@ package api.shopping.cart.domain.repository;
 
 import api.shopping.cart.infrastructure.persistence.entity.Country;
 
+import java.util.Optional;
+
 /**
  * CountryRepository interface
  *
@@ -11,5 +13,6 @@ import api.shopping.cart.infrastructure.persistence.entity.Country;
  */
 public interface CountryRepository {
 
+    Optional<Country> findByName(String country);
     void save(Country country);
 }

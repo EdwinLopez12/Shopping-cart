@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
@@ -25,6 +26,7 @@ import java.io.File;
  */
 @Component
 @AllArgsConstructor
+@Order(2)
 public class ApiCountrySetUpDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CountryRepository countryRepository;

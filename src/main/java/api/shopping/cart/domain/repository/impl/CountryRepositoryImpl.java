@@ -6,6 +6,8 @@ import api.shopping.cart.infrastructure.persistence.jpa.CountryJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * CountryRepositoryImpl class
  *
@@ -18,6 +20,11 @@ import org.springframework.stereotype.Repository;
 public class CountryRepositoryImpl implements CountryRepository {
 
     private final CountryJpaRepository countryJpaRepository;
+
+    @Override
+    public Optional<Country> findByName(String country) {
+        return countryJpaRepository.findByName(country);
+    }
 
     @Override
     public void save(Country country) {
