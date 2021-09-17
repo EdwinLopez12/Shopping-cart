@@ -1,5 +1,6 @@
 package api.shopping.cart.infrastructure.controller;
 
+import api.shopping.cart.domain.dto.user.UserDataRequest;
 import api.shopping.cart.domain.dto.user.UserRolesRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.UserService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,5 +45,12 @@ public class UserController {
     public ResponseEntity<GeneralResponseModel> deleteRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
 
         return new ResponseEntity<>(userService.deleteRoles(userRolesRequest, id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EDIT_USER')")
+    @PostMapping(value = "/{username}/data")
+    public ResponseEntity<GeneralResponseModel> addData(@Valid @RequestBody UserDataRequest userDataRequest, @PathVariable(name = "username") String username) {
+
+        return new ResponseEntity<>(userService.addData(userDataRequest, username), HttpStatus.CREATED);
     }
 }

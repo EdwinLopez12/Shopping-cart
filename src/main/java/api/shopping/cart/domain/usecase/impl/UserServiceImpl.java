@@ -1,6 +1,7 @@
 package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.role.RoleRequest;
+import api.shopping.cart.domain.dto.user.UserDataRequest;
 import api.shopping.cart.domain.dto.user.UserRolesRequest;
 import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
@@ -98,5 +99,10 @@ public class UserServiceImpl implements UserService {
             user.removeRole(role);
         }
         userRepository.save(user);
+    }
+
+    @Override
+    public GeneralResponseModel addData(UserDataRequest userDataRequest, String username) {
+        return null;
     }
 }
