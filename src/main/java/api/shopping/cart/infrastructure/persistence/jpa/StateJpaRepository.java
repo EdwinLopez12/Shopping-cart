@@ -2,7 +2,10 @@ package api.shopping.cart.infrastructure.persistence.jpa;
 
 import api.shopping.cart.infrastructure.persistence.entity.State;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * StateJpaRepository interface
@@ -14,4 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StateJpaRepository extends JpaRepository<State, Long> {
 
+    @Query(
+            value = "SELECT s FROM State s WHERE s.country.name = :country"
+    )
+    List<State> findAllByCountry(String country);
 }

@@ -2,6 +2,8 @@ package api.shopping.cart.domain.repository;
 
 import api.shopping.cart.infrastructure.persistence.entity.State;
 
+import java.util.List;
+
 /**
  * StateRepository interface
  *
@@ -11,5 +13,6 @@ import api.shopping.cart.infrastructure.persistence.entity.State;
  */
 public interface StateRepository {
 
+    List<State> findAllByCountry(String country);
     void save(State state);
 }
