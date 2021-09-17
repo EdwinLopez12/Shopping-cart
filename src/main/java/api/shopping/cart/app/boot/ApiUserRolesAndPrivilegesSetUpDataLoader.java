@@ -55,14 +55,18 @@ public class ApiUserRolesAndPrivilegesSetUpDataLoader implements ApplicationList
         Privilege readUser = createPrivilegeIfNotFound("READ_USER");
         Privilege editUser = createPrivilegeIfNotFound("EDIT_USER");
 
+        Privilege browseTown = createPrivilegeIfNotFound("BROWSE_TOWN");
+
         List<Privilege> adminPrivileges = Arrays.asList(
                 browseRole, readRole, editRole, addRole, deleteRole,
                 browsePrivilege, readPrivilege,
-                browseUser, readUser, editUser
+                browseUser, readUser, editUser,
+                browseTown
         );
 
         List<Privilege> userPrivileges = Arrays.asList(
-                readUser, editUser
+                readUser, editUser,
+                browseTown
         );
 
         Role adminRole = createRoleIfNotFound("ADMIN_ROLE", adminPrivileges);
