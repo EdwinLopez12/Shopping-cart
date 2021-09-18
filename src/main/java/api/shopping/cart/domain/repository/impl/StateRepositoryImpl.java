@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * StateRepositoryImpl class
@@ -29,5 +30,10 @@ public class StateRepositoryImpl implements StateRepository {
     @Override
     public void save(State state) {
         stateJpaRepository.save(state);
+    }
+
+    @Override
+    public Optional<State> findByStateId(Long id) {
+        return stateJpaRepository.findByStateId(id);
     }
 }

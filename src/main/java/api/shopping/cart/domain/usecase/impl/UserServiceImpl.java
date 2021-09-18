@@ -7,11 +7,16 @@ import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.repository.RoleRepository;
+import api.shopping.cart.domain.repository.StateRepository;
+import api.shopping.cart.domain.repository.UserDataRepository;
 import api.shopping.cart.domain.repository.UserRepository;
 import api.shopping.cart.domain.usecase.UserService;
 import api.shopping.cart.infrastructure.persistence.entity.Role;
+import api.shopping.cart.infrastructure.persistence.entity.State;
 import api.shopping.cart.infrastructure.persistence.entity.User;
+import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
+import api.shopping.cart.infrastructure.persistence.mapper.UserDataMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +36,13 @@ public class UserServiceImpl implements UserService {
     private static final String ROLE_ALREADY_ASSIGNED = "The email is already in use";
     private static final String ROLE_NOT_FOUND = "The role doesn't exist or couldn't be found";
     private static final String USER_NOT_FOUND = "The user doesn't exist or couldn't be found";
+    private static final String STATE_NOT_FOUND = "The state doesn't exist or couldn't be found";
     private final GeneralResponseModelMapper generalMapper;
+    private final UserDataMapper userDataMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserDataRepository userDataRepository;
+    private final StateRepository stateRepository;
 
     @Override
     public GeneralResponseModel updateRoles(UserRolesRequest userRolesRequest, Long id) {
@@ -103,6 +112,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GeneralResponseModel addData(UserDataRequest userDataRequest, String username) {
-        return null;
+        User user = userRepository.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));
+        State state = stateRepository.findByStateId(userDataRequest.getTown()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
+        UserData userData = userDataMapper.UserDataRequestToUserData(userDataRequest, user, state);
+        userDataRepository.save(userData);
+        return generalMapper.responseToGeneralResponseModel(201, "add user data", "Data stored successfully", null, "Ok");
     }
 }

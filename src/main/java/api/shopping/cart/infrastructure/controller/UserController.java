@@ -33,6 +33,13 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Update roles.
+     *
+     * @param id               the id
+     * @param userRolesRequest the user roles request
+     * @return the response entity
+     */
     @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @PutMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> updateRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
@@ -40,6 +47,13 @@ public class UserController {
         return new ResponseEntity<>(userService.updateRoles(userRolesRequest, id), HttpStatus.OK);
     }
 
+    /**
+     * Delete roles.
+     *
+     * @param id               the id
+     * @param userRolesRequest the user roles request
+     * @return the response entity
+     */
     @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @DeleteMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> deleteRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
@@ -47,6 +61,13 @@ public class UserController {
         return new ResponseEntity<>(userService.deleteRoles(userRolesRequest, id), HttpStatus.OK);
     }
 
+    /**
+     * Add data.
+     *
+     * @param userDataRequest the user data request
+     * @param username        the username
+     * @return the response entity
+     */
     @PreAuthorize("hasAuthority('EDIT_USER')")
     @PostMapping(value = "/{username}/data")
     public ResponseEntity<GeneralResponseModel> addData(@Valid @RequestBody UserDataRequest userDataRequest, @PathVariable(name = "username") String username) {

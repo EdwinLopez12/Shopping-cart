@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * UserDataRequest class
@@ -32,25 +33,25 @@ public class UserDataRequest {
     private String nid;
 
     @JsonProperty
-    @NotBlank(message = "Name es required")
+    @NotBlank(message = "Name is required")
     @Length(min = 3, max = 255, message = "Name must be greater than or equal to 3")
     private String name;
 
     @JsonProperty
-    @NotBlank(message = "Last name es required")
+    @NotBlank(message = "Last name is required")
     @Length(min = 3, max = 255, message = "Last name must be greater than or equal to 3")
     private String lastName;
 
     // regex
     @JsonProperty
-    @NotBlank(message = "Cellphone es required")
+    @NotBlank(message = "Cellphone is required")
     private String cellphone;
 
     @JsonProperty
-    @NotBlank(message = "Address es required")
+    @NotBlank(message = "Address is required")
     private String address;
 
     @JsonProperty
-    @NotBlank(message = "Town es required")
+    @NotNull(message = "Town is required")
     private Long town;
 }
