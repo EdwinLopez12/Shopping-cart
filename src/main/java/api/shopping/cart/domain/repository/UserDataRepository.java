@@ -2,6 +2,8 @@ package api.shopping.cart.domain.repository;
 
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
 
+import java.util.Optional;
+
 /**
  * UserDataRepository interface
  *
@@ -11,5 +13,6 @@ import api.shopping.cart.infrastructure.persistence.entity.UserData;
  */
 public interface UserDataRepository {
 
+    Optional<UserData> findByUserId(Long id);
     void save(UserData userData);
 }

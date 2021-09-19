@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 public class UserDataMapper {
 
 
-    public UserData UserDataRequestToUserData(UserDataRequest userDataRequest, User user, State state) {
-        UserData userData = new UserData();
-
+    public UserData UserDataRequestToUserData(UserDataRequest userDataRequest, UserData userData, User user, State state) {
         if (userDataRequest.getNid() != null) userData.setNid(userDataRequest.getNid());
         if (userDataRequest.getName() != null) userData.setName(userDataRequest.getName());
         if (userDataRequest.getLastName() != null) userData.setLastName(userDataRequest.getLastName());

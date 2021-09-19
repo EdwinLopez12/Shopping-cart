@@ -65,13 +65,25 @@ public class UserController {
      * Add data.
      *
      * @param userDataRequest the user data request
-     * @param username        the username
      * @return the response entity
      */
     @PreAuthorize("hasAuthority('EDIT_USER')")
-    @PostMapping(value = "/{username}/data")
-    public ResponseEntity<GeneralResponseModel> addData(@Valid @RequestBody UserDataRequest userDataRequest, @PathVariable(name = "username") String username) {
+    @PostMapping(value = "/data")
+    public ResponseEntity<GeneralResponseModel> addData(@Valid @RequestBody UserDataRequest userDataRequest) {
 
-        return new ResponseEntity<>(userService.addData(userDataRequest, username), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.addData(userDataRequest), HttpStatus.CREATED);
+    }
+
+    /**
+     * Edit data.
+     *
+     * @param userDataRequest the user data request
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('EDIT_USER')")
+    @PutMapping(value = "/data")
+    public ResponseEntity<GeneralResponseModel> editData(@Valid @RequestBody UserDataRequest userDataRequest) {
+
+        return new ResponseEntity<>(userService.editData(userDataRequest), HttpStatus.OK);
     }
 }

@@ -18,6 +18,7 @@ import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.UserDataMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -111,11 +112,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GeneralResponseModel addData(UserDataRequest userDataRequest, String username) {
-        User user = userRepository.findByUsernameOptional(username).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));
+    public GeneralResponseModel addData(UserDataRequest userDataRequest) {
+        User user = getCurrentUser();
         State state = stateRepository.findByStateId(userDataRequest.getTown()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
-        UserData userData = userDataMapper.UserDataRequestToUserData(userDataRequest, user, state);
+        UserData userData = new UserData();
+        userData = userDataMapper.UserDataRequestToUserData(userDataRequest, userData, user, state);
         userDataRepository.save(userData);
         return generalMapper.responseToGeneralResponseModel(201, "add user data", "Data stored successfully", null, "Ok");
+    }
+
+    @Override
+    public User getCurrentUser() {
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsernameOptional(principal.getUsername()).orElseThrow(()-> new ApiNotFoundException(USER_NOT_FOUND));
+    }
+
+    @Override
+    public GeneralResponseModel editData(UserDataRequest userDataRequest) {
+        User user = getCurrentUser();
+        State state = stateRepository.findByStateId(userDataRequest.getTown()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
+        UserData userData = userDataRepository.findByUserId(user.getId()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
+        userData = userDataMapper.UserDataRequestToUserData(userDataRequest, userData, user, state);
+        userDataRepository.save(userData);
+        return generalMapper.responseToGeneralResponseModel(200, "edit user data", "Data updated successfully", null, "Ok");
     }
 }

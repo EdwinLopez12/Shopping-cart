@@ -6,6 +6,8 @@ import api.shopping.cart.infrastructure.persistence.jpa.UserDataJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * UserDataRepositoryImpl class
  *
@@ -18,6 +20,11 @@ import org.springframework.stereotype.Service;
 public class UserDataRepositoryImpl implements UserDataRepository {
 
     private final UserDataJpaRepository userDataJpaRepository;
+
+    @Override
+    public Optional<UserData> findByUserId(Long id) {
+        return userDataJpaRepository.findByUserId(id);
+    }
 
     @Override
     public void save(UserData userData) {
