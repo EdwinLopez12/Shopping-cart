@@ -8,7 +8,7 @@ import api.shopping.cart.domain.model.GeneralResponseModel;
  * ProductService class
  *
  * @author edwin.lopezb.1297
- * @project cart
+ * @project shoppingcart
  * @since v1.0.0 - sep. 2021
  */
 public interface ProductService {
