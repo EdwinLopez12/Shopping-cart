@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * CategoryRepositoryImpl class
  *
@@ -24,5 +26,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public Page<Category> findAll(Pageable pageable) {
         return categoryJpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Category> findById(Long id) {
+        return categoryJpaRepository.findById(id);
     }
 }

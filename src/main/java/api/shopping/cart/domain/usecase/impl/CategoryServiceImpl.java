@@ -2,6 +2,7 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.category.CategoryRequest;
 import api.shopping.cart.domain.dto.category.CategoryResponse;
+import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+
+    private static final String CATEGORY_NOT_FOUND = "The category doesn't exist or couldn't be found";
 
     private final CategoryRepository categoryRepository;
 
@@ -55,7 +59,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public GeneralResponseModel get(Long id) {
-        return null;
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
+        CategoryResponse categoryResponse = categoryMapper.categoryToCategoryResponse(category);
+        return generalMapper.responseToGeneralResponseModel(200, "get category", "Categories listed", Collections.singletonList(categoryResponse), "Ok");
     }
 
     @Override
