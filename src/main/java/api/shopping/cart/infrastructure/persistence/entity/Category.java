@@ -1,6 +1,5 @@
 package api.shopping.cart.infrastructure.persistence.entity;
 
-import api.shopping.cart.infrastructure.persistence.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,21 +8,17 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Product class
+ * Category class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -34,36 +29,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tb_product")
+@Table(name = "tb_category")
 @Entity
-public class Product {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
-    private String code;
-
     private String name;
 
     private String description;
 
-    private Double weight;
-
-    private Integer total;
-
-    private ProductStatus productStatus;
-
-    private BigDecimal price;
-
-    @ManyToMany(targetEntity = Category.class)
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories;
+    @ManyToMany(mappedBy = "categories", targetEntity = Product.class, fetch = FetchType.EAGER)
+    private List<Product> products;
 
     private Instant createdAt;
 
