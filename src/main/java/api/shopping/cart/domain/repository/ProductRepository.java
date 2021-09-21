@@ -4,6 +4,8 @@ import api.shopping.cart.infrastructure.persistence.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 /**
  * ProductRepository class
  *
@@ -14,4 +16,6 @@ import org.springframework.data.domain.Pageable;
 public interface ProductRepository {
 
     Page<Product> findAll(Pageable pageable);
+
+    Optional<Product> findById(Long id);
 }

@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     public GeneralResponseModel get(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
         CategoryResponse categoryResponse = categoryMapper.categoryToCategoryResponse(category);
-        return generalMapper.responseToGeneralResponseModel(200, "get category", "Categories listed", Collections.singletonList(categoryResponse), "Ok");
+        return generalMapper.responseToGeneralResponseModel(200, "get category", "Category found", Collections.singletonList(categoryResponse), "Ok");
     }
 
     @Override

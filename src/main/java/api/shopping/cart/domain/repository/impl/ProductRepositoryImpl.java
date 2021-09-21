@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * ProductRepository class
  *
@@ -24,5 +26,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Page<Product> findAll(Pageable pageable) {
         return productJpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Product> findById(Long id) {
+        return productJpaRepository.findById(id);
     }
 }

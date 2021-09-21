@@ -22,12 +22,12 @@ public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
     Page<Category> findAll(Pageable pageable);
 
     @Query(
-            value = "SELECT c FROM Category c WHERE c.id = :id"
+            value = "SELECT c FROM Category c WHERE c.id = :id AND c.deletedAt IS NULL"
     )
     Optional<Category> findById(Long id);
 
     @Query(
-            value = "SELECT c FROM Category c WHERE c.name = :name"
+            value = "SELECT c FROM Category c WHERE c.name = :name AND c.deletedAt IS NULL"
     )
     Optional<Category> findByName(String name);
 }

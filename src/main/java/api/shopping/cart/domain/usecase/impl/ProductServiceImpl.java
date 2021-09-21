@@ -2,6 +2,7 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.product.ProductRequest;
 import api.shopping.cart.domain.dto.product.ProductResponse;
+import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +32,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
+    private static final String PRODUCT_NOT_FOUND = "The product doesn't exist or couldn't be found";
+    private static final String PRODUCT_ALREADY_EXIST = "The product already exist";
 
     private final ProductRepository productRepository;
 
@@ -55,7 +60,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel get(Long id) {
-        return null;
+        Product product = productRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        return generalMapper.responseToGeneralResponseModel(200, "get product", "Product found", Collections.singletonList(productMapper.productToProductResponse(product)), "Ok");
     }
 
     @Override

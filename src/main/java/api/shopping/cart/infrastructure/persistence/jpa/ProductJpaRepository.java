@@ -4,7 +4,10 @@ import api.shopping.cart.infrastructure.persistence.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * ProductJpaRepository class
@@ -17,4 +20,9 @@ import org.springframework.stereotype.Repository;
 public interface ProductJpaRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAll(Pageable pageable);
+
+    @Query(
+            value = "SELECT p FROM Product p WHERE p.id = :id AND p.deletedAt IS NULL"
+    )
+    Optional<Product> findById(Long id);
 }
