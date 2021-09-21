@@ -49,8 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public PageableGeneralResponseModel getAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Category> p = categoryRepository.findAll(pageable);
-        return pageable(p, "get all");
+        Page<Category> c = categoryRepository.findAll(pageable);
+        return pageable(c, "get all");
     }
 
     private PageableGeneralResponseModel pageable(Page<Category> c, String type){

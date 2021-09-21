@@ -1,5 +1,9 @@
 package api.shopping.cart.domain.repository;
 
+import api.shopping.cart.infrastructure.persistence.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  * ProductRepository class
  *
@@ -9,4 +13,5 @@ package api.shopping.cart.domain.repository;
  */
 public interface ProductRepository {
 
+    Page<Product> findAll(Pageable pageable);
 }
