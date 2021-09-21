@@ -78,7 +78,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public GeneralResponseModel edit(CategoryRequest categoryRequest, Long id) {
-        return null;
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
+        category = categoryMapper.categoryRequestToCategory(categoryRequest, category);
+        categoryRepository.save(category);
+        return generalMapper.responseToGeneralResponseModel(200, "edit category", "Category edited", Collections.singletonList(categoryMapper.categoryToCategoryResponse(category)), "Ok");
     }
 
     @Override
