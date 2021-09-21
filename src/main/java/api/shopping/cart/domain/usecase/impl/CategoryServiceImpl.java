@@ -11,6 +11,7 @@ import api.shopping.cart.domain.repository.CategoryRepository;
 import api.shopping.cart.domain.usecase.CategoryService;
 import api.shopping.cart.infrastructure.RoutesMapping;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
+import api.shopping.cart.infrastructure.persistence.entity.Product;
 import api.shopping.cart.infrastructure.persistence.mapper.CategoryMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final String CATEGORY_NOT_FOUND = "The category doesn't exist or couldn't be found";
     private static final String CATEGORY_ALREADY_EXIST = "The category already exist";
+    private static final String CATEGORY_HAS_PRODUCTS = "The category can't be deleted because it's used by at least one product. Try assigning a new category to the product (s) and try deleting again.";
 
     private final CategoryRepository categoryRepository;
 
@@ -86,6 +89,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public GeneralResponseModel delete(Long id) {
-        return null;
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
+        List<Product> products = category.getProducts();
+        if (!products.isEmpty()) throw new ApiConflictException(CATEGORY_HAS_PRODUCTS);
+        category.setDeletedAt(Instant.now());
+        categoryRepository.save(category);
+        return generalMapper.responseToGeneralResponseModel(200, "delete category", "Category deleted", null, "Ok");
     }
 }
