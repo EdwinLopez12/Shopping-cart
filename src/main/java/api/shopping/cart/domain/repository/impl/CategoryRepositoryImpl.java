@@ -32,4 +32,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Optional<Category> findById(Long id) {
         return categoryJpaRepository.findById(id);
     }
+
+    @Override
+    public Optional<Category> findByName(String name) {
+        return categoryJpaRepository.findByName(name);
+    }
+
+    @Override
+    public void save(Category category) {
+        categoryJpaRepository.save(category);
+    }
 }

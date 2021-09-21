@@ -2,6 +2,7 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.category.CategoryRequest;
 import api.shopping.cart.domain.dto.category.CategoryResponse;
+import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
@@ -10,7 +11,6 @@ import api.shopping.cart.domain.repository.CategoryRepository;
 import api.shopping.cart.domain.usecase.CategoryService;
 import api.shopping.cart.infrastructure.RoutesMapping;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
-import api.shopping.cart.infrastructure.persistence.entity.Privilege;
 import api.shopping.cart.infrastructure.persistence.mapper.CategoryMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import lombok.AllArgsConstructor;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * CategoryServiceImpl class
@@ -35,6 +36,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private static final String CATEGORY_NOT_FOUND = "The category doesn't exist or couldn't be found";
+    private static final String CATEGORY_ALREADY_EXIST = "The category already exist";
 
     private final CategoryRepository categoryRepository;
 
@@ -66,7 +68,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public GeneralResponseModel add(CategoryRequest categoryRequest) {
-        return null;
+        Optional<Category> category = categoryRepository.findByName(categoryRequest.getName());
+        if (category.isPresent()) throw new ApiConflictException(CATEGORY_ALREADY_EXIST);
+        Category newCategory = new Category();
+        newCategory = categoryMapper.categoryRequestToCategory(categoryRequest, newCategory);
+        categoryRepository.save(newCategory);
+        return generalMapper.responseToGeneralResponseModel(200, "add category", "Category created", Collections.singletonList(categoryMapper.categoryToCategoryResponse(newCategory)), "Ok");
     }
 
     @Override

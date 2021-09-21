@@ -18,4 +18,8 @@ public interface CategoryRepository {
     Page<Category> findAll(Pageable pageable);
 
     Optional<Category> findById(Long id);
+
+    Optional<Category> findByName(String name);
+
+    void save(Category category);
 }

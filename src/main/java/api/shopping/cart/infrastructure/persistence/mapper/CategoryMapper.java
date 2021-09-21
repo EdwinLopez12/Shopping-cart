@@ -1,5 +1,6 @@
 package api.shopping.cart.infrastructure.persistence.mapper;
 
+import api.shopping.cart.domain.dto.category.CategoryRequest;
 import api.shopping.cart.domain.dto.category.CategoryResponse;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
 import org.springframework.stereotype.Component;
@@ -31,5 +32,11 @@ public class CategoryMapper {
             categories.add(categoryToCategoryResponse(category));
         }
         return categories;
+    }
+
+    public Category categoryRequestToCategory(CategoryRequest categoryRequest, Category category) {
+        if (categoryRequest.getName() != null) category.setName(categoryRequest.getName());
+        if (categoryRequest.getDescription() != null) category.setDescription(categoryRequest.getDescription());
+        return category;
     }
 }
