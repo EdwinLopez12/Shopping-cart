@@ -15,11 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,4 +70,28 @@ public class Product {
     private Instant updatedAt;
 
     private Instant deletedAt;
+
+    /**
+     * Add category.
+     *
+     * @param category the category
+     */
+    public void addCategory(Category category) {
+        if (categories == null) {
+            categories = new ArrayList<>(Collections.singletonList(category));
+        }else{
+            categories.add(category);
+        }
+    }
+
+    /**
+     * Remove category.
+     *
+     * @param category the category
+     */
+    public void removeCategory(Category category) {
+        if (categories != null) {
+            categories.remove(category);
+        }
+    }
 }

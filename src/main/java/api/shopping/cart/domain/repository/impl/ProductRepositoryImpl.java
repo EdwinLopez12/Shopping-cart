@@ -32,4 +32,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Optional<Product> findById(Long id) {
         return productJpaRepository.findById(id);
     }
+
+    @Override
+    public Optional<Product> findByName(String name) {
+        return productJpaRepository.findByName(name);
+    }
+
+    @Override
+    public void save(Product product) {
+        productJpaRepository.save(product);
+    }
 }

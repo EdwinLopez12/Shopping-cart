@@ -2,13 +2,16 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.product.ProductRequest;
 import api.shopping.cart.domain.dto.product.ProductResponse;
+import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
+import api.shopping.cart.domain.repository.CategoryRepository;
 import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.usecase.ProductService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import api.shopping.cart.infrastructure.persistence.entity.Category;
 import api.shopping.cart.infrastructure.persistence.entity.Product;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.ProductMapper;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ProductServiceImpl class
@@ -35,8 +39,10 @@ public class ProductServiceImpl implements ProductService {
 
     private static final String PRODUCT_NOT_FOUND = "The product doesn't exist or couldn't be found";
     private static final String PRODUCT_ALREADY_EXIST = "The product already exist";
+    private static final String CATEGORY_NOT_FOUND = "The category doesn't exist or couldn't be found";
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     private final GeneralResponseModelMapper generalMapper;
     private final ProductMapper productMapper;
@@ -66,7 +72,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel add(ProductRequest productRequest) {
-        return null;
+        Optional<Product> product = productRepository.findByName(productRequest.getName());
+        if (product.isPresent()) throw new ApiConflictException(PRODUCT_ALREADY_EXIST);
+        Product newProduct = new Product();
+        newProduct = productMapper.productRequestToProduct(productRequest, newProduct);
+        productRepository.save(newProduct);
+        return generalMapper.responseToGeneralResponseModel(200, "add product", "Product created", Collections.singletonList(productMapper.productToProductResponse(newProduct)), "Ok");
+
     }
 
     @Override

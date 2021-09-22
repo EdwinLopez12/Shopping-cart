@@ -18,4 +18,8 @@ public interface ProductRepository {
     Page<Product> findAll(Pageable pageable);
 
     Optional<Product> findById(Long id);
+
+    Optional<Product> findByName(String name);
+
+    void save(Product newProduct);
 }

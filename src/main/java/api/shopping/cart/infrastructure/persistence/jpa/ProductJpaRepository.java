@@ -25,4 +25,9 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long> {
             value = "SELECT p FROM Product p WHERE p.id = :id AND p.deletedAt IS NULL"
     )
     Optional<Product> findById(Long id);
+
+    @Query(
+            value = "SELECT p FROM Product p WHERE p.name = :name AND p.deletedAt IS NULL"
+    )
+    Optional<Product> findByName(String name);
 }
