@@ -1,5 +1,6 @@
 package api.shopping.cart.domain.dto.product;
 
+import api.shopping.cart.domain.dto.category.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * ProductResponse class
@@ -28,4 +30,5 @@ public class ProductResponse {
     private Double weight;
     private Integer total;
     private BigDecimal price;
+    private List<CategoryResponse> categories;
 }

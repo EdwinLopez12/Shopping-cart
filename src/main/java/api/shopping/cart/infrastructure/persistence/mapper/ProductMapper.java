@@ -19,6 +19,8 @@ import java.util.List;
 @Component
 public class ProductMapper {
 
+    private final CategoryMapper categoryMapper = new CategoryMapper();
+
     public ProductResponse productToProductResponse(Product product) {
         ProductResponse productResponse = new ProductResponse();
         if (product.getId() != null) productResponse.setId(productResponse.getId());
@@ -28,7 +30,7 @@ public class ProductMapper {
         if (product.getWeight() != null) productResponse.setWeight(product.getWeight());
         if (product.getTotal() != null) productResponse.setTotal(product.getTotal());
         if (product.getPrice() != null) productResponse.setPrice(product.getPrice());
-        // TODO: Retonar lista de categorias
+        if (!product.getCategories().isEmpty()) productResponse.setCategories(categoryMapper.categoryListToCategoryResponse(product.getCategories()));
         return productResponse;
     }
 
