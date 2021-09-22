@@ -1,5 +1,6 @@
 package api.shopping.cart.domain.usecase.impl;
 
+import api.shopping.cart.domain.dto.product.ProductCategoryRequest;
 import api.shopping.cart.domain.dto.product.ProductRequest;
 import api.shopping.cart.domain.dto.product.ProductResponse;
 import api.shopping.cart.domain.exception.ApiConflictException;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -75,10 +77,19 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = productRepository.findByName(productRequest.getName());
         if (product.isPresent()) throw new ApiConflictException(PRODUCT_ALREADY_EXIST);
         Product newProduct = new Product();
-        newProduct = productMapper.productRequestToProduct(productRequest, newProduct);
+        List<Category> categories = getCategories(productRequest.getCategories());
+        newProduct = productMapper.productRequestToProduct(productRequest, newProduct, categories);
         productRepository.save(newProduct);
         return generalMapper.responseToGeneralResponseModel(200, "add product", "Product created", Collections.singletonList(productMapper.productToProductResponse(newProduct)), "Ok");
 
+    }
+
+    private List<Category> getCategories(List<ProductCategoryRequest> ids) {
+        List<Category> categories = new ArrayList<>();
+        for (ProductCategoryRequest pcr : ids) {
+            categories.add(categoryRepository.findById(pcr.getId()).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND)));
+        }
+        return categories;
     }
 
     @Override

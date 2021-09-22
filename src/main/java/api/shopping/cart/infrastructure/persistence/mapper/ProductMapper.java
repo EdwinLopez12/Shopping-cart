@@ -40,14 +40,14 @@ public class ProductMapper {
         return productResponses;
     }
 
-    public Product productRequestToProduct(ProductRequest productRequest, Product product) {
+    public Product productRequestToProduct(ProductRequest productRequest, Product product, List<Category> categories) {
         if (productRequest.getCode() != null) product.setCode(productRequest.getCode());
         if (productRequest.getName() != null) product.setName(productRequest.getName());
         if (productRequest.getDescription() != null) product.setDescription(productRequest.getDescription());
         if (productRequest.getTotal() != null) product.setTotal(productRequest.getTotal());
         if (productRequest.getPrice() != null) product.setPrice(productRequest.getPrice());
         if (productRequest.getWeight() != null) product.setWeight(productRequest.getWeight());
-        // TODO: mapear la lista de categorias
+        if (!categories.isEmpty()) product.setCategories(categories);
         return product;
     }
 }

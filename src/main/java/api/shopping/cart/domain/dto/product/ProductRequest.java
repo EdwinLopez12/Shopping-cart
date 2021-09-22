@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * ProductRequest class
@@ -57,5 +58,5 @@ public class ProductRequest {
 
     @JsonProperty
     @NotNull(message = "Category is required")
-    private Long category;
+    private List<ProductCategoryRequest> categories;
 }
