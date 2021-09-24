@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public interface CategoryRepository {
 
-    Page<Category> findAll(Pageable pageable);
+    Page<Category> findAllByDeletedAtIsNotNull(Pageable pageable);
 
     Optional<Category> findById(Long id);
 

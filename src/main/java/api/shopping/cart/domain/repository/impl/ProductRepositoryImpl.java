@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -51,5 +52,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Optional<Product> findByIdAndDeleteAtIsNotNull(Long id) {
         return productJpaRepository.findByIdAndDeletedAtIsNotNull(id);
+    }
+
+    @Override
+    public List<Product> findByCategoryId(Long id) {
+        return productJpaRepository.findByCategoryId(id);
     }
 }

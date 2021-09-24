@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
 
-    Page<Category> findAll(Pageable pageable);
+    Page<Category> findAllByDeletedAtIsNotNull(Pageable pageable);
 
     @Query(
             value = "SELECT c FROM Category c WHERE c.id = :id AND c.deletedAt IS NULL"

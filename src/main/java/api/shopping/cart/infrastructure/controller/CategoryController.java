@@ -43,7 +43,7 @@ public class CategoryController {
      * @param size the size
      * @return the all
      */
-    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @PreAuthorize("hasAuthority('BROWSE_CATEGORY')")
     @GetMapping()
     public ResponseEntity<PageableGeneralResponseModel> getAll(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
@@ -56,7 +56,7 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('READ_PRODUCT')")
+    @PreAuthorize("hasAuthority('READ_CATEGORY')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> get(@PathVariable(name = "id") Long id) {
 
@@ -70,7 +70,7 @@ public class CategoryController {
      * @param categoryRequest the category request
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('EDIT_PRODUCT')")
+    @PreAuthorize("hasAuthority('EDIT_CATEGORY')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> edit(@PathVariable(name = "id") Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
 
@@ -83,7 +83,7 @@ public class CategoryController {
      * @param categoryRequest the product request
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('ADD_PRODUCT')")
+    @PreAuthorize("hasAuthority('ADD_CATEGORY')")
     @PostMapping
     public ResponseEntity<GeneralResponseModel> add(@Valid @RequestBody CategoryRequest categoryRequest) {
 
@@ -96,10 +96,50 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('DELETE_PRODUCT')")
+    @PreAuthorize("hasAuthority('DELETE_CATEGORY')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> delete(@PathVariable(name = "id") Long id) {
 
         return new ResponseEntity<>(categoryService.delete(id), HttpStatus.OK);
+    }
+
+    /**
+     * Products by category response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_CATEGORY')")
+    @GetMapping(value = "{id}/products")
+    public ResponseEntity<GeneralResponseModel> productsByCategory(@PathVariable(name = "id") Long id) {
+
+        return new ResponseEntity<>(categoryService.productsByCategory(id), HttpStatus.OK);
+    }
+
+    /**
+     * Deleted list response entity.
+     *
+     * @param page the page
+     * @param size the size
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_CATEGORY')" + "&& hasAuthority('DELETE_CATEGORY')")
+    @GetMapping(value = "/deleted")
+    public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+
+        return new ResponseEntity<>(categoryService.deleteList(page, size), HttpStatus.OK);
+    }
+
+    /**
+     * Reactivate response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_CATEGORY')" + "&& hasAuthority('EDIT_CATEGORY')")
+    @PutMapping(value = "/deleted/{id}")
+    public ResponseEntity<GeneralResponseModel> reactivate(@PathVariable(name = "id") Long id) {
+
+        return new ResponseEntity<>(categoryService.reactivate(id), HttpStatus.OK);
     }
 }

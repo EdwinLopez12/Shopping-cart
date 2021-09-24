@@ -25,8 +25,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     private final CategoryJpaRepository categoryJpaRepository;
 
     @Override
-    public Page<Category> findAll(Pageable pageable) {
-        return categoryJpaRepository.findAll(pageable);
+    public Page<Category> findAllByDeletedAtIsNotNull(Pageable pageable) {
+        return categoryJpaRepository.findAllByDeletedAtIsNotNull(pageable);
     }
 
     @Override

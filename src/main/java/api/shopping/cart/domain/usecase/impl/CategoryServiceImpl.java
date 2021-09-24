@@ -8,12 +8,14 @@ import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.repository.CategoryRepository;
+import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.usecase.CategoryService;
 import api.shopping.cart.infrastructure.RoutesMapping;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
 import api.shopping.cart.infrastructure.persistence.entity.Product;
 import api.shopping.cart.infrastructure.persistence.mapper.CategoryMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
+import api.shopping.cart.infrastructure.persistence.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,17 +41,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final String CATEGORY_NOT_FOUND = "The category doesn't exist or couldn't be found";
     private static final String CATEGORY_ALREADY_EXIST = "The category already exist";
-    private static final String CATEGORY_HAS_PRODUCTS = "The category can't be deleted because it's used by at least one product. Try assigning a new category to the product (s) and try deleting again.";
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     private final GeneralResponseModelMapper generalMapper;
     private final CategoryMapper categoryMapper;
+    private final ProductMapper productMapper;
 
     @Override
     public PageableGeneralResponseModel getAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Category> c = categoryRepository.findAll(pageable);
+        Page<Category> c = categoryRepository.findAllByDeletedAtIsNotNull(pageable);
         return pageable(c, "get all");
     }
 
@@ -92,10 +95,26 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GeneralResponseModel delete(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
-        List<Product> products = category.getProducts();
-        if (!products.isEmpty()) throw new ApiConflictException(CATEGORY_HAS_PRODUCTS);
         category.setDeletedAt(Instant.now());
         categoryRepository.save(category);
         return generalMapper.responseToGeneralResponseModel(200, "delete category", "Category deleted", null, "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel productsByCategory(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (!category.isPresent()) throw new ApiNotFoundException(CATEGORY_NOT_FOUND);
+        List<Product> products = productRepository.findByCategoryId(id);
+        return generalMapper.responseToGeneralResponseModel(200, "products by category id", "Products listed", Collections.singletonList(productMapper.productListToProductResponse(products)), "Ok");
+    }
+
+    @Override
+    public PageableGeneralResponseModel deleteList(Integer page, Integer size) {
+        return null;
+    }
+
+    @Override
+    public GeneralResponseModel reactivate(Long id) {
+        return null;
     }
 }
