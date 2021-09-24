@@ -101,4 +101,17 @@ public class ProductController {
 
         return new ResponseEntity<>(productService.delete(id), HttpStatus.OK);
     }
+
+    /**
+     * Categories by product id.
+     *
+     * @param id the id
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @GetMapping(value = "{id}/categories")
+    public ResponseEntity<GeneralResponseModel> categoriesByProduct(@PathVariable(name = "id") Long id) {
+
+        return new ResponseEntity<>(productService.categoriesByProduct(id), HttpStatus.OK);
+    }
 }

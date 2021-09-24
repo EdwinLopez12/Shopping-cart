@@ -18,4 +18,5 @@ public interface ProductService {
     GeneralResponseModel add(ProductRequest productRequest);
     GeneralResponseModel edit(ProductRequest productRequest, Long id);
     GeneralResponseModel delete(Long id);
+    GeneralResponseModel categoriesByProduct(Long id);
 }

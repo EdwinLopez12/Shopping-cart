@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,5 +42,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public void save(Category category) {
         categoryJpaRepository.save(category);
+    }
+
+    @Override
+    public List<Category> findByProductId(Long id) {
+        return categoryJpaRepository.findByProductId(id);
     }
 }

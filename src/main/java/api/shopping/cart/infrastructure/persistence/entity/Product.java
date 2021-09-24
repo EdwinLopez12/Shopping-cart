@@ -59,7 +59,7 @@ public class Product {
 
     @ManyToMany(targetEntity = Category.class)
     @JoinTable(
-            name = "product_category",
+            name = "tb_product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )

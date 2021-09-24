@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,4 +31,9 @@ public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
             value = "SELECT c FROM Category c WHERE c.name = :name AND c.deletedAt IS NULL"
     )
     Optional<Category> findByName(String name);
+
+    @Query(
+            value = "SELECT pc.category FROM ProductCategory pc WHERE pc.product.id = :id"
+    )
+    List<Category> findByProductId(Long id);
 }

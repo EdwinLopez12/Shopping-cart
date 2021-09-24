@@ -14,6 +14,7 @@ import api.shopping.cart.domain.usecase.ProductService;
 import api.shopping.cart.infrastructure.RoutesMapping;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
 import api.shopping.cart.infrastructure.persistence.entity.Product;
+import api.shopping.cart.infrastructure.persistence.mapper.CategoryMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import api.shopping.cart.infrastructure.persistence.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
@@ -49,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final GeneralResponseModelMapper generalMapper;
     private final ProductMapper productMapper;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public PageableGeneralResponseModel getAll(Integer page, Integer size) {
@@ -114,5 +116,12 @@ public class ProductServiceImpl implements ProductService {
         product.setDeletedAt(Instant.now());
         productRepository.save(product);
         return generalMapper.responseToGeneralResponseModel(200, "delete product", "Product deleted", null, "Ok");
+    }
+
+    @Override
+    public GeneralResponseModel categoriesByProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        List<Category> categories = categoryRepository.findByProductId(id);
+        return generalMapper.responseToGeneralResponseModel(200, "categories by product", "Categories listed", Collections.singletonList(categoryMapper.categoryListToCategoryResponse(categories)), "Ok");
     }
 }
