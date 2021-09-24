@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 public interface CategoryRepository {
 
-    Page<Category> findAllByDeletedAtIsNotNull(Pageable pageable);
+    Page<Category> findAllByDeletedAtIsNull(Pageable pageable);
 
     Optional<Category> findById(Long id);
 
@@ -26,5 +26,7 @@ public interface CategoryRepository {
 
     List<Category> findByProductId(Long id);
 
-    Page<Category> findAllByDeletedAtIsNull(Pageable pageable);
+    Page<Category> findAllByDeletedAtIsNotNull(Pageable pageable);
+
+    Optional<Category> findByIdAndDeletedAtIsNotNull(Long id);
 }

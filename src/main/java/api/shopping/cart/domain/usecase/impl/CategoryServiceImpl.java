@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public PageableGeneralResponseModel getAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Category> c = categoryRepository.findAllByDeletedAtIsNotNull(pageable);
+        Page<Category> c = categoryRepository.findAllByDeletedAtIsNull(pageable);
         return pageable(c, "get all");
     }
 
@@ -111,12 +111,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public PageableGeneralResponseModel deletedList(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Category> c = categoryRepository.findAllByDeletedAtIsNull(pageable);
+        Page<Category> c = categoryRepository.findAllByDeletedAtIsNotNull(pageable);
         return pageable(c, "get all deleted");
     }
 
     @Override
     public GeneralResponseModel reactivate(Long id) {
-        return null;
+        Category category = categoryRepository.findByIdAndDeletedAtIsNotNull(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
+        category.setDeletedAt(null);
+        categoryRepository.save(category);
+        return generalMapper.responseToGeneralResponseModel(200, "reactivate", "Category reactivated", Collections.singletonList(categoryMapper.categoryToCategoryResponse(category)), "Ok");
     }
 }

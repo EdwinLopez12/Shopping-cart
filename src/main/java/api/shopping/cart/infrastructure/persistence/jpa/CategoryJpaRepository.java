@@ -38,4 +38,9 @@ public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
     List<Category> findByProductId(Long id);
 
     Page<Category> findAllByDeletedAtIsNull(Pageable pageable);
+
+    @Query(
+            value = "SELECT c FROM Category c WHERE c.id = :id AND c.deletedAt IS NOT NULL"
+    )
+    Optional<Category> findByIdAndDeletedAtIsNotNull(Long id);
 }

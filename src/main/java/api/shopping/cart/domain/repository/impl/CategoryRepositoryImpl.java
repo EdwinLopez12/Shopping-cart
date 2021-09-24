@@ -53,4 +53,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Page<Category> findAllByDeletedAtIsNull(Pageable pageable) {
         return categoryJpaRepository.findAllByDeletedAtIsNull(pageable);
     }
+
+    @Override
+    public Optional<Category> findByIdAndDeletedAtIsNotNull(Long id) {
+        return categoryJpaRepository.findByIdAndDeletedAtIsNotNull(id);
+    }
 }
