@@ -90,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void setProductStatus(Product product, Integer total) {
         if (total == 0) product.setProductStatus(ProductStatus.OUT_OF_STOCK);
-        if (total < 5) product.setProductStatus(ProductStatus.FEW_UNITS);
+        if (total < 5 && total >0) product.setProductStatus(ProductStatus.FEW_UNITS);
         if (total >= 5) product.setProductStatus(ProductStatus.AVAILABLE);
     }
 
@@ -134,5 +134,18 @@ public class ProductServiceImpl implements ProductService {
         }
         List<Category> categories = categoryRepository.findByProductId(id);
         return generalMapper.responseToGeneralResponseModel(200, "categories by product", "Categories listed", Collections.singletonList(categoryMapper.categoryListToCategoryResponse(categories)), "Ok");
+    }
+
+
+    @Override
+    public PageableGeneralResponseModel deleteList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        Page<Product> p = productRepository.findAll(pageable);
+        return pageable(p, "get all deleted");
+    }
+
+    @Override
+    public GeneralResponseModel reactivate(Long id) {
+        return null;
     }
 }

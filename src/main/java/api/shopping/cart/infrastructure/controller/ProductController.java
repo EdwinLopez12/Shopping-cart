@@ -33,7 +33,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     /**
      * Gets all.
@@ -113,5 +113,32 @@ public class ProductController {
     public ResponseEntity<GeneralResponseModel> categoriesByProduct(@PathVariable(name = "id") Long id) {
 
         return new ResponseEntity<>(productService.categoriesByProduct(id), HttpStatus.OK);
+    }
+
+    /**
+     * Products deleted response entity.
+     *
+     * @param page the page
+     * @param size the size
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @GetMapping(value = "/deleted")
+    public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+
+        return new ResponseEntity<>(productService.deleteList(page, size), HttpStatus.OK);
+    }
+
+    /**
+     * Reactivate response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @PutMapping(value = "/deleted/{id}")
+    public ResponseEntity<GeneralResponseModel> reactivate(@PathVariable(name = "id") Long id) {
+
+        return new ResponseEntity<>(productService.reactivate(id), HttpStatus.OK);
     }
 }

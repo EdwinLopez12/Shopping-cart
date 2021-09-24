@@ -33,7 +33,7 @@ public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByName(String name);
 
     @Query(
-            value = "SELECT c FROM Product p JOIN p.categories c WHERE p.id = :id"
+            value = "SELECT c FROM Product p JOIN p.categories c WHERE p.id = :id AND p.deletedAt IS NULL AND c.deletedAt IS NULL"
     )
     List<Category> findByProductId(Long id);
 }
