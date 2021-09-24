@@ -12,6 +12,7 @@ import api.shopping.cart.domain.repository.CategoryRepository;
 import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.usecase.ProductService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import api.shopping.cart.infrastructure.persistence.ProductStatus;
 import api.shopping.cart.infrastructure.persistence.entity.Category;
 import api.shopping.cart.infrastructure.persistence.entity.Product;
 import api.shopping.cart.infrastructure.persistence.mapper.CategoryMapper;
@@ -82,9 +83,15 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = new Product();
         List<Category> categories = getCategories(productRequest.getCategories());
         newProduct = productMapper.productRequestToProduct(productRequest, newProduct, categories);
+        setProductStatus(newProduct, productRequest.getTotal());
         productRepository.save(newProduct);
         return generalMapper.responseToGeneralResponseModel(200, "add product", "Product created", Collections.singletonList(productMapper.productToProductResponse(newProduct)), "Ok");
+    }
 
+    private void setProductStatus(Product product, Integer total) {
+        if (total == 0) product.setProductStatus(ProductStatus.OUT_OF_STOCK);
+        if (total < 5) product.setProductStatus(ProductStatus.FEW_UNITS);
+        if (total >= 5) product.setProductStatus(ProductStatus.AVAILABLE);
     }
 
     private Optional<Product> getProductByName(String name) {
@@ -106,6 +113,7 @@ public class ProductServiceImpl implements ProductService {
         if (productName.isPresent() && !productName.get().getId().equals(product.getId())) throw new ApiConflictException(PRODUCT_ALREADY_EXIST);
         List<Category> categories = getCategories(productRequest.getCategories());
         product = productMapper.productRequestToProduct(productRequest, product, categories);
+        setProductStatus(product, productRequest.getTotal());
         productRepository.save(product);
         return generalMapper.responseToGeneralResponseModel(200, "edit product", "Product edited", Collections.singletonList(productMapper.productToProductResponse(product)), "Ok");
     }
@@ -120,7 +128,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel categoriesByProduct(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        Optional<Product> product = productRepository.findById(id);
+        if (!product.isPresent()) {
+            throw  new ApiNotFoundException(PRODUCT_NOT_FOUND);
+        }
         List<Category> categories = categoryRepository.findByProductId(id);
         return generalMapper.responseToGeneralResponseModel(200, "categories by product", "Categories listed", Collections.singletonList(categoryMapper.categoryListToCategoryResponse(categories)), "Ok");
     }

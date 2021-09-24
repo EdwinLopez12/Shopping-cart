@@ -1,5 +1,6 @@
 package api.shopping.cart.domain.dto.product;
 
+import api.shopping.cart.infrastructure.persistence.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,4 +29,5 @@ public class ProductResponse {
     private Double weight;
     private Integer total;
     private BigDecimal price;
+    private ProductStatus status;
 }

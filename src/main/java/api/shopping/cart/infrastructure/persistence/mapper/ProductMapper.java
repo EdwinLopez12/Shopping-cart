@@ -21,13 +21,14 @@ public class ProductMapper {
 
     public ProductResponse productToProductResponse(Product product) {
         ProductResponse productResponse = new ProductResponse();
-        if (product.getId() != null) productResponse.setId(productResponse.getId());
+        if (product.getId() != null) productResponse.setId(product.getId());
         if (product.getCode() != null) productResponse.setCode(product.getCode());
         if (product.getName() != null) productResponse.setName(product.getName());
         if (product.getDescription() != null) productResponse.setDescription(product.getDescription());
         if (product.getWeight() != null) productResponse.setWeight(product.getWeight());
         if (product.getTotal() != null) productResponse.setTotal(product.getTotal());
         if (product.getPrice() != null) productResponse.setPrice(product.getPrice());
+        if (product.getProductStatus() != null) productResponse.setStatus(product.getProductStatus());
         return productResponse;
     }
 
