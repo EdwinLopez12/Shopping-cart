@@ -122,7 +122,7 @@ public class ProductController {
      * @param size the size
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')" + "&& hasAuthority('DELETE_PRODUCT')")
     @GetMapping(value = "/deleted")
     public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
@@ -135,7 +135,7 @@ public class ProductController {
      * @param id the id
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
+    @PreAuthorize("hasAuthority('BROWSE_PRODUCT')" + "&& hasAuthority('EDIT_PRODUCT')")
     @PutMapping(value = "/deleted/{id}")
     public ResponseEntity<GeneralResponseModel> reactivate(@PathVariable(name = "id") Long id) {
 
