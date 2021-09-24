@@ -82,6 +82,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GeneralResponseModel edit(CategoryRequest categoryRequest, Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(CATEGORY_NOT_FOUND));
+        Optional<Category> categoryName = categoryRepository.findByName(categoryRequest.getName());
+        if (categoryName.isPresent() && !category.getId().equals(categoryName.get().getId())) throw new ApiConflictException(CATEGORY_ALREADY_EXIST);
         category = categoryMapper.categoryRequestToCategory(categoryRequest, category);
         categoryRepository.save(category);
         return generalMapper.responseToGeneralResponseModel(200, "edit category", "Category edited", Collections.singletonList(categoryMapper.categoryToCategoryResponse(category)), "Ok");

@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel add(ProductRequest productRequest) {
-        Optional<Product> product = productRepository.findByName(productRequest.getName());
+        Optional<Product> product = getProductByName(productRequest.getName());
         if (product.isPresent()) throw new ApiConflictException(PRODUCT_ALREADY_EXIST);
         Product newProduct = new Product();
         List<Category> categories = getCategories(productRequest.getCategories());
@@ -82,6 +82,10 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(newProduct);
         return generalMapper.responseToGeneralResponseModel(200, "add product", "Product created", Collections.singletonList(productMapper.productToProductResponse(newProduct)), "Ok");
 
+    }
+
+    private Optional<Product> getProductByName(String name) {
+        return productRepository.findByName(name);
     }
 
     private List<Category> getCategories(List<ProductCategoryRequest> ids) {
@@ -94,7 +98,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel edit(ProductRequest productRequest, Long id) {
-        return null;
+        Product product = productRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        Optional<Product> productName = getProductByName(productRequest.getName());
+        if (productName.isPresent() && !productName.get().getId().equals(product.getId())) throw new ApiConflictException(PRODUCT_ALREADY_EXIST);
+        List<Category> categories = getCategories(productRequest.getCategories());
+        product = productMapper.productRequestToProduct(productRequest, product, categories);
+        productRepository.save(product);
+        return generalMapper.responseToGeneralResponseModel(200, "edit product", "Product edited", Collections.singletonList(productMapper.productToProductResponse(product)), "Ok");
     }
 
     @Override
