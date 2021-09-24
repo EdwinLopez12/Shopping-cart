@@ -1,7 +1,6 @@
 package api.shopping.cart.infrastructure.controller;
 
 import api.shopping.cart.domain.dto.category.CategoryRequest;
-import api.shopping.cart.domain.dto.product.ProductRequest;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.CategoryService;
@@ -127,7 +126,7 @@ public class CategoryController {
     @GetMapping(value = "/deleted")
     public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
-        return new ResponseEntity<>(categoryService.deleteList(page, size), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.deletedList(page, size), HttpStatus.OK);
     }
 
     /**

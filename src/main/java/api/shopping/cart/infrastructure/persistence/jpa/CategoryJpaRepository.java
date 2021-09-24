@@ -36,4 +36,6 @@ public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
             value = "SELECT c FROM Product p JOIN p.categories c WHERE p.id = :id AND p.deletedAt IS NULL AND c.deletedAt IS NULL"
     )
     List<Category> findByProductId(Long id);
+
+    Page<Category> findAllByDeletedAtIsNull(Pageable pageable);
 }

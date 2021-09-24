@@ -19,6 +19,6 @@ public interface CategoryService {
     GeneralResponseModel edit(CategoryRequest categoryRequest, Long id);
     GeneralResponseModel delete(Long id);
     GeneralResponseModel productsByCategory(Long id);
-    PageableGeneralResponseModel deleteList(Integer page, Integer size);
+    PageableGeneralResponseModel deletedList(Integer page, Integer size);
     GeneralResponseModel reactivate(Long id);
 }

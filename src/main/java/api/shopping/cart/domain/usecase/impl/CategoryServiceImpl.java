@@ -109,8 +109,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public PageableGeneralResponseModel deleteList(Integer page, Integer size) {
-        return null;
+    public PageableGeneralResponseModel deletedList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        Page<Category> c = categoryRepository.findAllByDeletedAtIsNull(pageable);
+        return pageable(c, "get all deleted");
     }
 
     @Override

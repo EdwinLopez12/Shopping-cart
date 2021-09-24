@@ -25,4 +25,6 @@ public interface CategoryRepository {
     void save(Category category);
 
     List<Category> findByProductId(Long id);
+
+    Page<Category> findAllByDeletedAtIsNull(Pageable pageable);
 }

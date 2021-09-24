@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public PageableGeneralResponseModel deleteList(Integer page, Integer size) {
+    public PageableGeneralResponseModel deletedList(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
         Page<Product> p = productRepository.findAllByDeletedAtIsNotNull(pageable);
         return pageable(p, "get all deleted");

@@ -126,7 +126,7 @@ public class ProductController {
     @GetMapping(value = "/deleted")
     public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
 
-        return new ResponseEntity<>(productService.deleteList(page, size), HttpStatus.OK);
+        return new ResponseEntity<>(productService.deletedList(page, size), HttpStatus.OK);
     }
 
     /**

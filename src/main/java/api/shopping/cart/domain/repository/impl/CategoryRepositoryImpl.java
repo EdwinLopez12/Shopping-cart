@@ -48,4 +48,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public List<Category> findByProductId(Long id) {
         return categoryJpaRepository.findByProductId(id);
     }
+
+    @Override
+    public Page<Category> findAllByDeletedAtIsNull(Pageable pageable) {
+        return categoryJpaRepository.findAllByDeletedAtIsNull(pageable);
+    }
 }
