@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -109,6 +110,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GeneralResponseModel delete(Long id) {
-        return null;
+        Product product = productRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        product.setDeletedAt(Instant.now());
+        productRepository.save(product);
+        return generalMapper.responseToGeneralResponseModel(200, "delete product", "Product deleted", null, "Ok");
     }
 }
