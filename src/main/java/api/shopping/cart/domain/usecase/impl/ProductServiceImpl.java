@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageableGeneralResponseModel getAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Product> p = productRepository.findAll(pageable);
+        Page<Product> p = productRepository.findAllByDeletedAtIsNull(pageable);
         return pageable(p, "get all");
     }
 
@@ -84,6 +84,7 @@ public class ProductServiceImpl implements ProductService {
         List<Category> categories = getCategories(productRequest.getCategories());
         newProduct = productMapper.productRequestToProduct(productRequest, newProduct, categories);
         setProductStatus(newProduct, productRequest.getTotal());
+        newProduct.setCreatedAt(Instant.now());
         productRepository.save(newProduct);
         return generalMapper.responseToGeneralResponseModel(200, "add product", "Product created", Collections.singletonList(productMapper.productToProductResponse(newProduct)), "Ok");
     }
@@ -114,6 +115,7 @@ public class ProductServiceImpl implements ProductService {
         List<Category> categories = getCategories(productRequest.getCategories());
         product = productMapper.productRequestToProduct(productRequest, product, categories);
         setProductStatus(product, productRequest.getTotal());
+        product.setUpdatedAt(Instant.now());
         productRepository.save(product);
         return generalMapper.responseToGeneralResponseModel(200, "edit product", "Product edited", Collections.singletonList(productMapper.productToProductResponse(product)), "Ok");
     }
@@ -140,12 +142,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageableGeneralResponseModel deleteList(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Product> p = productRepository.findAll(pageable);
+        Page<Product> p = productRepository.findAllByDeletedAtIsNotNull(pageable);
         return pageable(p, "get all deleted");
     }
 
     @Override
     public GeneralResponseModel reactivate(Long id) {
-        return null;
+        Product product = productRepository.findByIdAndDeleteAtIsNotNull(id).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        product.setDeletedAt(null);
+        productRepository.save(product);
+        return generalMapper.responseToGeneralResponseModel(200, "reactivate", "Product reactivated", Collections.singletonList(productMapper.productToProductResponse(product)), "Ok");
     }
 }

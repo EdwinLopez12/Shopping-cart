@@ -19,7 +19,7 @@ import java.util.Optional;
 @Repository
 public interface ProductJpaRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByDeletedAtIsNull(Pageable pageable);
 
     @Query(
             value = "SELECT p FROM Product p WHERE p.id = :id AND p.deletedAt IS NULL"
@@ -30,4 +30,11 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long> {
             value = "SELECT p FROM Product p WHERE p.name = :name AND p.deletedAt IS NULL"
     )
     Optional<Product> findByName(String name);
+
+    Page<Product> findAllByDeletedAtIsNotNull(Pageable pageable);
+
+    @Query(
+            value = "SELECT p FROM Product p WHERE p.id = :id AND p.deletedAt IS NOT NULL"
+    )
+    Optional<Product> findByIdAndDeletedAtIsNotNull(Long id);
 }

@@ -15,11 +15,15 @@ import java.util.Optional;
  */
 public interface ProductRepository {
 
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByDeletedAtIsNull(Pageable pageable);
 
     Optional<Product> findById(Long id);
 
     Optional<Product> findByName(String name);
 
     void save(Product newProduct);
+
+    Page<Product> findAllByDeletedAtIsNotNull(Pageable pageable);
+
+    Optional<Product> findByIdAndDeleteAtIsNotNull(Long id);
 }

@@ -24,8 +24,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final ProductJpaRepository productJpaRepository;
 
     @Override
-    public Page<Product> findAll(Pageable pageable) {
-        return productJpaRepository.findAll(pageable);
+    public Page<Product> findAllByDeletedAtIsNull(Pageable pageable) {
+        return productJpaRepository.findAllByDeletedAtIsNull(pageable);
     }
 
     @Override
@@ -41,5 +41,15 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public void save(Product product) {
         productJpaRepository.save(product);
+    }
+
+    @Override
+    public Page<Product> findAllByDeletedAtIsNotNull(Pageable pageable) {
+        return productJpaRepository.findAllByDeletedAtIsNotNull(pageable);
+    }
+
+    @Override
+    public Optional<Product> findByIdAndDeleteAtIsNotNull(Long id) {
+        return productJpaRepository.findByIdAndDeletedAtIsNotNull(id);
     }
 }
