@@ -1,5 +1,6 @@
 package api.shopping.cart.domain.usecase;
 
+import api.shopping.cart.domain.dto.order.OrderRequest;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 

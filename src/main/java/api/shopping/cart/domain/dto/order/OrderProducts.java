@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.Valid;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
- * OrderRequest class
+ * OrderProducts class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -24,8 +24,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderRequest {
+public class OrderProducts {
 
     @JsonProperty
-    List<@Valid OrderProducts> products;
+    @NotNull(message = "Product is required")
+    @Positive
+    private Long id;
+
+    @JsonProperty
+    @NotNull(message = "Amount is required")
+    private Integer amount;
 }
