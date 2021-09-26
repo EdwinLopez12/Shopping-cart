@@ -50,6 +50,20 @@ public class OrderController {
     }
 
     /**
+     * Gets all by user.
+     *
+     * @param page the page
+     * @param size the size
+     * @return the all by user
+     */
+    @PreAuthorize("hasAuthority('BROWSE_ORDER')")
+    @GetMapping
+    public ResponseEntity<PageableGeneralResponseModel> getAllByUser(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+
+        return new ResponseEntity<>(orderService.getAllByUser(page, size), HttpStatus.OK);
+    }
+
+    /**
      * Get response entity.
      *
      * @param id the id

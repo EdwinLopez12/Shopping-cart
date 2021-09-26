@@ -13,6 +13,7 @@ import api.shopping.cart.domain.model.GeneralResponseModel;
  */
 public interface OrderService {
     PageableGeneralResponseModel getAll(Integer page, Integer size);
+    PageableGeneralResponseModel getAllByUser(Integer page, Integer size);
     GeneralResponseModel get(Long id);
     GeneralResponseModel edit(Long id, OrderRequest orderRequest);
     GeneralResponseModel add(OrderRequest orderRequest);
