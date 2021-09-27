@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,8 +48,12 @@ public class Order {
 
     private BigDecimal totalPayment;
 
-    @OneToMany(targetEntity = OrderProduct.class, fetch = FetchType.LAZY)
-    private List<OrderProduct> products;
+    @OneToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tb_order_product",
+            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+    private List<Product> products;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_data_id")

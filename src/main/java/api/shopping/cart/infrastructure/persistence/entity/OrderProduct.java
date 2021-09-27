@@ -19,7 +19,7 @@ import java.math.BigDecimal;
  * OrderProduct class
  *
  * @author edwin.lopezb.1297
- * @project cart
+ * @project shoppingcart
  * @since v1.0.0 - sep. 2021
  */
 @Getter
@@ -38,6 +38,9 @@ public class OrderProduct {
     private Integer amount;
 
     private BigDecimal value;
+
+    @ManyToOne(targetEntity = Order.class, fetch = FetchType.LAZY)
+    private Order order;
 
     @ManyToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
     private Product product;
