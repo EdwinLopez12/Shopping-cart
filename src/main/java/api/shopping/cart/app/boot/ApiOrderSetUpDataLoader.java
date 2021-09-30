@@ -64,7 +64,6 @@ public class ApiOrderSetUpDataLoader implements ApplicationListener<ContextRefre
     private void createOrder(List<Product> products, UserData userData) {
         api.shopping.cart.infrastructure.persistence.entity.Order order = api.shopping.cart.infrastructure.persistence.entity.Order.builder()
                 .status(OrderStatus.PAID)
-                .date(FormatDates.instantToString(Instant.now()))
                 .totalPayment(BigDecimal.valueOf(10000))
                 .userData(userData)
                 .createdAt(Instant.now())
@@ -88,6 +87,7 @@ public class ApiOrderSetUpDataLoader implements ApplicationListener<ContextRefre
                 .lastName("L = "+ user.getUsername())
                 .phone("123456789")
                 .address("Cra 1 #10-15")
+                .user(user)
                 .state(state)
                 .build();
         userDataRepository.save(userData);

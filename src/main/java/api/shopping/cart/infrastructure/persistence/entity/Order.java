@@ -44,8 +44,6 @@ public class Order {
 
     private OrderStatus status;
 
-    private String date;
-
     private BigDecimal totalPayment;
 
     @ManyToOne(fetch = FetchType.LAZY)

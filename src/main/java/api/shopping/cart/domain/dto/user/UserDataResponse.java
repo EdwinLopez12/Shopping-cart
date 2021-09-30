@@ -23,8 +23,8 @@ public class UserDataResponse {
     private String name;
     private String lastName;
     private String cellphone;
-    private String email;
     private String address;
     private String state;
     private String country;
+    private UserResponse user;
 }
