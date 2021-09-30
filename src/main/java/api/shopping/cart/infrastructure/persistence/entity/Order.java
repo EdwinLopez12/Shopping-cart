@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -48,16 +48,12 @@ public class Order {
 
     private BigDecimal totalPayment;
 
-    @OneToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "tb_order_product",
-            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-    private List<Product> products;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_data_id")
     private UserData userData;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = {CascadeType.MERGE})
+    private List<OrderProduct> orderProduct;
 
     private Instant createdAt;
 

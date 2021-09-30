@@ -38,4 +38,10 @@ public class OrderProduct {
     private Integer amount;
 
     private BigDecimal value;
+
+    @ManyToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
+    private Product product;
+
+    @ManyToOne(targetEntity = Order.class, fetch = FetchType.LAZY)
+    private Order order;
 }
