@@ -77,7 +77,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public GeneralResponseModel get(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
-        return generalMapper.responseToGeneralResponseModel(200, "get order", "Order found", Collections.singletonList(orderMapper.orderToOrderResponse(order)), "Ok");
+        OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        return generalMapper.responseToGeneralResponseModel(200, "get order", "Order found", Collections.singletonList(orderResponse), "Ok");
     }
 
     @Override
