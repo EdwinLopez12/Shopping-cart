@@ -5,6 +5,8 @@ import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 /**
  * OrderRepository class
  *
@@ -16,4 +18,5 @@ public interface OrderRepository {
     Page<Order> findAllByDeletedAtIsNull(Pageable pageable);
     Page<Order> findAllByDeletedAtIsNullAndUserData(Pageable pageable, UserData userData);
     void save(Order order);
+    Optional<Order> findById(Long id);
 }

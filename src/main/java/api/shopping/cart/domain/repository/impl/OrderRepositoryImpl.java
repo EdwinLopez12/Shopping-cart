@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * OrderRepositoryImpl class
  *
@@ -35,5 +37,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public void save(Order order) {
         orderJpaRepository.save(order);
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderJpaRepository.findById(id);
     }
 }

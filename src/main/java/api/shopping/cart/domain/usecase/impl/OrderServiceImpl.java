@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private static final String USER_NOT_FOUND = "The user doesn't exist or couldn't be found";
-    private static final String PRODUCT_NOT_FOUND = "The product doesn't exist or couldn't be found";
+    private static final String ORDER_NOT_FOUND = "The order doesn't exist or couldn't be found";
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
@@ -64,8 +65,6 @@ public class OrderServiceImpl implements OrderService {
         return pageable(o, "get all by user");
     }
 
-
-
     private PageableGeneralResponseModel pageable(Page<Order> o, String type){
 
         List<OrderResponse> orders = orderMapper.orderListToOrderResponse(o.getContent());
@@ -77,7 +76,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel get(Long id) {
-        return null;
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
+        return generalMapper.responseToGeneralResponseModel(200, "get order", "Order found", Collections.singletonList(orderMapper.orderToOrderResponse(order)), "Ok");
     }
 
     @Override
