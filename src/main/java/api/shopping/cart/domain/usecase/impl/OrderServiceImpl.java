@@ -96,9 +96,10 @@ public class OrderServiceImpl implements OrderService {
     public GeneralResponseModel edit(Long id, OrderRequest orderRequest) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
         updateOrSaveOrderProducts(order, orderRequest, "EDIT");
+        order.setUpdatedAt(Instant.now());
         orderRepository.save(order);
         OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
-        return generalMapper.responseToGeneralResponseModel(200, "add order", "Order edited", Collections.singletonList(orderResponse), "Ok");
+        return generalMapper.responseToGeneralResponseModel(200, "edit order", "Order edited", Collections.singletonList(orderResponse), "Ok");
     }
 
     private BigDecimal calcTotalPayment(Order order) {
@@ -166,7 +167,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel delete(Long id) {
-        return null;
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
+        order.setDeletedAt(Instant.now());
+        orderRepository.save(order);
+        return generalMapper.responseToGeneralResponseModel(200, "delete order", "Order deleted", null, "Ok");
     }
 
     // Eliminar un producto de la orden
