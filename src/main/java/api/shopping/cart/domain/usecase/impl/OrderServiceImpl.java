@@ -94,27 +94,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel edit(Long id, OrderRequest orderRequest) {
-        // TODO: Refactorizar add y edit para qué se puedan llamar a una función pivote
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
-        if (!orderRequest.getProducts().isEmpty()) {
-            for (OrderProducts op : orderRequest.getProducts()) {
-                Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
-                if (op.getAmount() > product.getTotal()) throw new ApiConflictException(PRODUCT_NOT_ENOUGH);
-                OrderProduct orderProduct = OrderProduct.builder()
-                        .order(order)
-                        .product(product)
-                        .amount(op.getAmount())
-                        .value(product.getPrice())
-                        .build();
-                order.updateAmountOrderProduct(orderProduct);
-            }
-            order.setTotalPayment(calcTotalPayment(order));
-            orderRepository.save(order);
-            OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
-            return generalMapper.responseToGeneralResponseModel(200, "add order", "Order updated", Collections.singletonList(orderResponse), "Ok");
-        }else{
-            throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
-        }
+        updateOrSaveOrderProducts(order, orderRequest, "EDIT");
+        orderRepository.save(order);
+        OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+        return generalMapper.responseToGeneralResponseModel(200, "add order", "Order edited", Collections.singletonList(orderResponse), "Ok");
     }
 
     private BigDecimal calcTotalPayment(Order order) {
@@ -125,14 +109,13 @@ public class OrderServiceImpl implements OrderService {
         return totalPrice;
     }
 
-    private void addOrderProducts(Order order, OrderRequest orderRequest, BigDecimal totalPrice) {
+    private void updateOrSaveOrderProducts(Order order, OrderRequest orderRequest, String option) {
         if (!orderRequest.getProducts().isEmpty()) {
             for (OrderProducts op : orderRequest.getProducts()) {
+
                 Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
 
                 if (op.getAmount() > product.getTotal()) throw new ApiConflictException(PRODUCT_NOT_ENOUGH);
-
-                totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(op.getAmount())));
 
                 OrderProduct orderProduct = OrderProduct.builder()
                         .order(order)
@@ -140,9 +123,11 @@ public class OrderServiceImpl implements OrderService {
                         .amount(op.getAmount())
                         .value(product.getPrice())
                         .build();
-                order.addOrderProduct(orderProduct);
+                if (option.equals("ADD")) order.addOrderProduct(orderProduct);
+                if (option.equals("EDIT")) order.updateAmountOrderProduct(orderProduct);
+
             }
-            order.setTotalPayment(totalPrice);
+            order.setTotalPayment(calcTotalPayment(order));
         }else{
             throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
         }
@@ -158,12 +143,11 @@ public class OrderServiceImpl implements OrderService {
         UserData userData = getUserData(userService.getCurrentUser());
         Order order = orderRepository.findByUserDataAndStatusIsPending(userData, OrderStatus.PENDING);
         if (order != null){
-            addOrderProducts(order, orderRequest, order.getTotalPayment());
+            updateOrSaveOrderProducts(order, orderRequest, "ADD");
             orderRepository.save(order);
             OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
             return generalResponse(orderResponse);
         } else {
-            BigDecimal totalPrice = BigDecimal.valueOf(0);
             Order orderToSave = Order.builder()
                     .userData(userData)
                     .status(OrderStatus.PENDING)
@@ -172,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderRepository.save(orderToSave);
 
-            addOrderProducts(orderToSave, orderRequest, totalPrice);
+            updateOrSaveOrderProducts(orderToSave, orderRequest, "ADD");
             orderRepository.save(orderToSave);
 
             OrderResponse orderResponse = orderMapper.orderToOrderResponse(orderToSave);
