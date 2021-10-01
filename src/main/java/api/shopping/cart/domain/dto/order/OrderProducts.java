@@ -1,5 +1,6 @@
-package api.shopping.cart.domain.dto.user;
+package api.shopping.cart.domain.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 /**
- * UserResponse class
+ * OrderProducts class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -19,14 +22,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class OrderProducts {
 
     @JsonProperty
+    @NotNull(message = "Product is required")
     private Long id;
 
     @JsonProperty
-    private String username;
-
-    @JsonProperty
-    private String email;
+    @NotNull(message = "Amount is required")
+    private Integer amount;
 }

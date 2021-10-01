@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -58,5 +59,5 @@ public class ProductRequest {
 
     @JsonProperty
     @NotNull(message = "Category is required")
-    private List<ProductCategoryRequest> categories;
+    private List<@Valid ProductCategoryRequest> categories;
 }

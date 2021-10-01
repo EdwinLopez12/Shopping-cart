@@ -81,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
     public GeneralResponseModel editRole(Long id, RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
         Role role = findRole(id);
         Optional<Role> optionalRole = roleRepository.findByName(roleWithPrivilegesRequest.getName().getName());
-        if (!role.getName().equals(roleWithPrivilegesRequest.getName()) && optionalRole.isPresent()) {
+        if (!role.getName().equals(roleWithPrivilegesRequest.getName().getName()) && optionalRole.isPresent()) {
             throw new ApiConflictException(ROLE_ALREADY_EXIST);
         } else {
             List<Privilege> privileges = privilegeService.privilegesRequestToPrivilege(roleWithPrivilegesRequest.getPrivileges());

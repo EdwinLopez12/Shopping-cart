@@ -21,7 +21,7 @@ public interface AuthService {
 
     GeneralResponseModel signup(RegisterUserRequest registerUserRequest);
     String generateVerificationToken(User user);
-    GeneralResponseModel VerifyAccount(String token);
+    GeneralResponseModel verifyAccount(String token);
     GeneralResponseModel login(LoginUserRequest loginUserRequest);
     GeneralResponseModel refreshToken(RefreshTokenRequest refreshTokenRequest);
     GeneralResponseModel logout(LogoutRequest logoutRequest);

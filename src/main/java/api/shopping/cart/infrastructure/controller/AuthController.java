@@ -58,7 +58,7 @@ public class AuthController {
     @GetMapping(value = "/account-verification/{token}")
     public ResponseEntity<GeneralResponseModel> verifyAccount(@PathVariable(name = "token") String token) {
 
-        return new ResponseEntity<>(authService.VerifyAccount(token), HttpStatus.OK);
+        return new ResponseEntity<>(authService.verifyAccount(token), HttpStatus.OK);
     }
 
     /**

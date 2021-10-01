@@ -1,6 +1,5 @@
 package api.shopping.cart.domain.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * UserResponse class
+ * UserDataResponse class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -19,14 +18,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-
-    @JsonProperty
+public class UserDataResponse {
     private Long id;
-
-    @JsonProperty
-    private String username;
-
-    @JsonProperty
-    private String email;
+    private String name;
+    private String lastName;
+    private String cellphone;
+    private String address;
+    private String state;
+    private String country;
+    private UserResponse user;
 }

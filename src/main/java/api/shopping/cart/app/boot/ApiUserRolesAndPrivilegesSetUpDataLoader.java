@@ -69,13 +69,20 @@ public class ApiUserRolesAndPrivilegesSetUpDataLoader implements ApplicationList
         Privilege addCategory = createPrivilegeIfNotFound("ADD_CATEGORY");
         Privilege deleteCategory = createPrivilegeIfNotFound("DELETE_CATEGORY");
 
+        Privilege browseOrder = createPrivilegeIfNotFound("BROWSE_ORDER");
+        Privilege readOrder = createPrivilegeIfNotFound("READ_ORDER");
+        Privilege editOrder = createPrivilegeIfNotFound("EDIT_ORDER");
+        Privilege addOrder = createPrivilegeIfNotFound("ADD_ORDER");
+        Privilege deleteOrder = createPrivilegeIfNotFound("DELETE_ORDER");
+
         List<Privilege> adminPrivileges = Arrays.asList(
                 browseRole, readRole, editRole, addRole, deleteRole,
                 browsePrivilege, readPrivilege,
                 browseUser, readUser, editUser,
                 browseTown,
                 browseProduct, readProduct, editProduct, addProduct, deleteProduct,
-                browseCategory, readCategory, editCategory, addCategory, deleteCategory
+                browseCategory, readCategory, editCategory, addCategory, deleteCategory,
+                browseOrder, readOrder, editOrder, addOrder, deleteOrder
         );
 
         List<Privilege> userPrivileges = Arrays.asList(

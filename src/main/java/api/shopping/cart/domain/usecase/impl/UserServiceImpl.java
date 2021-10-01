@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
         User user = getCurrentUser();
         State state = stateRepository.findByStateId(userDataRequest.getTown()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
         UserData userData = new UserData();
-        userData = userDataMapper.UserDataRequestToUserData(userDataRequest, userData, user, state);
+        userData = userDataMapper.userDataRequestToUserData(userDataRequest, userData, user, state);
         userDataRepository.save(userData);
         return generalMapper.responseToGeneralResponseModel(201, "add user data", "Data stored successfully", null, "Ok");
     }
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         User user = getCurrentUser();
         State state = stateRepository.findByStateId(userDataRequest.getTown()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
         UserData userData = userDataRepository.findByUserId(user.getId()).orElseThrow(() -> new ApiNotFoundException(STATE_NOT_FOUND));
-        userData = userDataMapper.UserDataRequestToUserData(userDataRequest, userData, user, state);
+        userData = userDataMapper.userDataRequestToUserData(userDataRequest, userData, user, state);
         userDataRepository.save(userData);
         return generalMapper.responseToGeneralResponseModel(200, "edit user data", "Data updated successfully", null, "Ok");
     }

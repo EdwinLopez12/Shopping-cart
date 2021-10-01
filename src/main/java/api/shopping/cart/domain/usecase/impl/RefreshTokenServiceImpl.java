@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,12 +38,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public void validateRefreshToken(String token) {
-        refreshTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
+        if (!refreshToken.isPresent()) throw new ApiNotFoundException(TOKEN_NOT_FOUND);
     }
 
     @Override
     public void deleteRefreshToken(String token) {
-        refreshTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
+        if (!refreshToken.isPresent()) throw new ApiNotFoundException(TOKEN_NOT_FOUND);
         refreshTokenRepository.deleteByToken(token);
     }
 }

@@ -1,7 +1,9 @@
 package api.shopping.cart.infrastructure.persistence.mapper;
 
+import api.shopping.cart.domain.dto.user.UserDataResponse;
 import api.shopping.cart.domain.dto.user.UserResponse;
 import api.shopping.cart.infrastructure.persistence.entity.User;
+import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -31,5 +33,22 @@ public class UserMapper {
             users.add(userToUserResponse(user));
         }
         return users;
+    }
+
+    public UserDataResponse userDataToUserResponse(UserData userData) {
+        UserDataResponse userDataResponse = new UserDataResponse();
+        if (userData.getId() != null) userDataResponse.setId(userData.getId());
+        if (userData.getName() != null) userDataResponse.setName(userData.getName());
+        if (userData.getLastName() != null) userDataResponse.setLastName(userData.getLastName());
+        if (userData.getPhone() != null) userDataResponse.setCellphone(userData.getPhone());
+        if (userData.getAddress() != null) userDataResponse.setAddress(userData.getAddress());
+        if (userData.getState() != null) {
+            userDataResponse.setState(userData.getState().getStateName());
+            userDataResponse.setCountry(userData.getState().getCountry().getName());
+        }
+        if (userData.getUser() != null) {
+            userDataResponse.setUser(userToUserResponse(userData.getUser()));
+        }
+        return userDataResponse;
     }
 }
