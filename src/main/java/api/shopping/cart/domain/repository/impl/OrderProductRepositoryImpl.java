@@ -23,4 +23,9 @@ public class OrderProductRepositoryImpl implements OrderProductRepository {
     public void save(OrderProduct orderProduct) {
         orderProductJpaRepository.save(orderProduct);
     }
+
+    @Override
+    public void deleteByOrderIdAndProductId(Long id, Long productId) {
+        orderProductJpaRepository.deleteByOrderIdAndProductId(id, productId);
+    }
 }

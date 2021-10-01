@@ -11,4 +11,5 @@ import api.shopping.cart.infrastructure.persistence.entity.OrderProduct;
  */
 public interface OrderProductRepository {
     void save(OrderProduct orderProduct);
+    void deleteByOrderIdAndProductId(Long id, Long productId);
 }

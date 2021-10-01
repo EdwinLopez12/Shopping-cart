@@ -3,6 +3,7 @@ package api.shopping.cart.infrastructure.persistence.jpa;
 import api.shopping.cart.infrastructure.persistence.entity.OrderProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * OrderProductJpaRepository class
@@ -13,4 +14,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OrderProductJpaRepository extends JpaRepository<OrderProduct, Long> {
+
+    @Transactional
+    void deleteByOrderIdAndProductId(Long id, Long productId);
+
 }

@@ -109,11 +109,26 @@ public class OrderController {
      * @param id the id
      * @return the response entity
      */
-    @PreAuthorize("hasAuthority('DELETED_ORDER')")
+    @PreAuthorize("hasAuthority('DELETE_ORDER')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> delete(@PathVariable(name = "id") Long id) {
 
         return new ResponseEntity<>(orderService.delete(id), HttpStatus.OK);
     }
+
+    /**
+     * Delete product response entity.
+     *
+     * @param id           the id
+     * @param orderRequest the order request
+     * @return the response entity
+     */
+    @PreAuthorize("hasAuthority('DELETE_ORDER')" + "&& hasAuthority('DELETE_PRODUCT')")
+    @PostMapping(value = "/product/{id}")
+    public ResponseEntity<GeneralResponseModel> deleteProduct(@PathVariable(name = "id") Long id, @Valid @RequestBody OrderRequest orderRequest) {
+
+        return new ResponseEntity<>(orderService.deleteProduct(id, orderRequest), HttpStatus.OK);
+    }
+
 
 }

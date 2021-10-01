@@ -24,7 +24,7 @@ public class StateMapper {
         if (state.getDaneCodeState() != null) stateResponse.setStateCodeDane(state.getDaneCodeState());
         if (state.getStateName() != null) stateResponse.setState(state.getStateName());
         if (state.getDaneCodeTown() != null) stateResponse.setTownCodeDane(state.getDaneCodeTown());
-        if (state.getTownName() != null) stateResponse.setTown(state.getTownName());;
+        if (state.getTownName() != null) stateResponse.setTown(state.getTownName());
         return stateResponse;
     }
 

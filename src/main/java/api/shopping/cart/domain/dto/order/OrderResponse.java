@@ -2,7 +2,6 @@ package api.shopping.cart.domain.dto.order;
 
 import api.shopping.cart.domain.dto.product.ProductResponse;
 import api.shopping.cart.domain.dto.user.UserDataResponse;
-import api.shopping.cart.domain.dto.user.UserResponse;
 import api.shopping.cart.infrastructure.persistence.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

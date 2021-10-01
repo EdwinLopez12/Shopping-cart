@@ -18,4 +18,5 @@ public interface OrderService {
     GeneralResponseModel edit(Long id, OrderRequest orderRequest);
     GeneralResponseModel add(OrderRequest orderRequest);
     GeneralResponseModel delete(Long id);
+    GeneralResponseModel deleteProduct(Long id, OrderRequest orderRequest);
 }

@@ -8,6 +8,7 @@ import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
+import api.shopping.cart.domain.repository.OrderProductRepository;
 import api.shopping.cart.domain.repository.OrderRepository;
 import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.repository.UserDataRepository;
@@ -50,11 +51,13 @@ public class OrderServiceImpl implements OrderService {
     private static final String ORDER_NOT_FOUND = "The order doesn't exist or couldn't be found";
     private static final String PRODUCT_NOT_FOUND = "The product doesn't exist or couldn't be found";
     private static final String PRODUCT_NOT_ENOUGH = "There are not enough products";
-    private static final String ORDER_NOT_HAVE_PRODUCTS = "The order must have one or more products";
+    private static final String ORDER_REQUEST_NOT_HAVE_PRODUCTS = "The request must have one or more products";
+    private static final String ORDER_NOT_HAVE_PRODUCTS = "The order doesn't have products";
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final UserDataRepository userDataRepository;
+    private final OrderProductRepository orderProductRepository;
 
     private final UserService userService;
 
@@ -92,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
         return generalMapper.responseToGeneralResponseModel(200, "get order", "Order found", Collections.singletonList(orderResponse), "Ok");
     }
 
+    @Transactional
     @Override
     public GeneralResponseModel edit(Long id, OrderRequest orderRequest) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
@@ -104,8 +108,10 @@ public class OrderServiceImpl implements OrderService {
 
     private BigDecimal calcTotalPayment(Order order) {
         BigDecimal totalPrice = BigDecimal.valueOf(0);
-        for (OrderProduct orderProduct : order.getOrderProducts()) {
-            totalPrice = totalPrice.add(orderProduct.getValue().multiply(BigDecimal.valueOf(orderProduct.getAmount())));
+        if (!order.getOrderProducts().isEmpty()) {
+            for (OrderProduct orderProduct : order.getOrderProducts()) {
+                totalPrice = totalPrice.add(orderProduct.getValue().multiply(BigDecimal.valueOf(orderProduct.getAmount())));
+            }
         }
         return totalPrice;
     }
@@ -130,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
             }
             order.setTotalPayment(calcTotalPayment(order));
         }else{
-            throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
+            throw new ApiConflictException(ORDER_REQUEST_NOT_HAVE_PRODUCTS);
         }
     }
 
@@ -173,15 +179,29 @@ public class OrderServiceImpl implements OrderService {
         return generalMapper.responseToGeneralResponseModel(200, "delete order", "Order deleted", null, "Ok");
     }
 
-    // Eliminar un producto de la orden
 
-    //    private List<Product> getProducts(List<OrderProduct> products) {
-//        List<Product> productList = new ArrayList<>();
-//        for (OrderProduct orderProduct : products) {
-//            productList.add(productRepository.findById(orderProduct.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND)));
-//        }
-//        return productList;
-//    }
+    @Override
+    public GeneralResponseModel deleteProduct(Long id, OrderRequest orderRequest) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
+        if (orderRequest.getProducts().isEmpty()) throw new ApiConflictException(ORDER_REQUEST_NOT_HAVE_PRODUCTS);
+        if (!order.getOrderProducts().isEmpty()) throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
+
+        for (OrderProducts ops : orderRequest.getProducts()) {
+            boolean flag = false;
+            for (OrderProduct op : order.getOrderProducts()) {
+                if (ops.getId().equals(op.getProduct().getId())) flag = true;
+            }
+            if (!flag) throw new ApiNotFoundException(PRODUCT_NOT_FOUND);
+        }
+
+        for (OrderProducts op : orderRequest.getProducts()) {
+            order.removeOrderProduct(op.getId());
+            orderProductRepository.deleteByOrderIdAndProductId(order.getId(), op.getId());
+        }
+        order.setTotalPayment(calcTotalPayment(order));
+        orderRepository.save(order);
+        return generalMapper.responseToGeneralResponseModel(200, "delete product from order", "Product deleted", null, "Ok");
+    }
 
     private UserData getUserData(User user) {
         return userDataRepository.findByUserId(user.getId()).orElseThrow(() -> new ApiNotFoundException(USER_NOT_FOUND));

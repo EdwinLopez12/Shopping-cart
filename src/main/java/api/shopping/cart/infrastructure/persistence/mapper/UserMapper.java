@@ -4,7 +4,6 @@ import api.shopping.cart.domain.dto.user.UserDataResponse;
 import api.shopping.cart.domain.dto.user.UserResponse;
 import api.shopping.cart.infrastructure.persistence.entity.User;
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

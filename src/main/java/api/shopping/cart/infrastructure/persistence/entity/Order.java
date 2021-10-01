@@ -99,13 +99,11 @@ public class Order {
     /**
      * Remove order product.
      *
-     * @param orderProduct the order product
+     * @param id the id
      */
-    public void removeOrderProduct(OrderProduct orderProduct) {
+    public void removeOrderProduct(Long id) {
         if (orderProducts != null) {
-            for (int i = orderProducts.size() - 1; i>=0; i--) {
-                if (orderProducts.get(i).getProduct().getId().equals(orderProduct.getProduct().getId())) orderProducts.remove(i);
-            }
+            orderProducts.removeIf(orderProduct -> orderProduct.getProduct().getId().equals(id));
         }
     }
 }
