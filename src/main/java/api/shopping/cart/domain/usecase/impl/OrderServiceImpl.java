@@ -94,7 +94,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel edit(Long id, OrderRequest orderRequest) {
-        return null;
+        // TODO: Refactorizar add y edit para qué se puedan llamar a una función pivote
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
+        if (!orderRequest.getProducts().isEmpty()) {
+            for (OrderProducts op : orderRequest.getProducts()) {
+                Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+                if (op.getAmount() > product.getTotal()) throw new ApiConflictException(PRODUCT_NOT_ENOUGH);
+                OrderProduct orderProduct = OrderProduct.builder()
+                        .order(order)
+                        .product(product)
+                        .amount(op.getAmount())
+                        .value(product.getPrice())
+                        .build();
+                order.updateAmountOrderProduct(orderProduct);
+            }
+            order.setTotalPayment(calcTotalPayment(order));
+            orderRepository.save(order);
+            OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+            return generalMapper.responseToGeneralResponseModel(200, "add order", "Order updated", Collections.singletonList(orderResponse), "Ok");
+        }else{
+            throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
+        }
+    }
+
+    private BigDecimal calcTotalPayment(Order order) {
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            totalPrice = totalPrice.add(orderProduct.getValue().multiply(BigDecimal.valueOf(orderProduct.getAmount())));
+        }
+        return totalPrice;
     }
 
     private void addOrderProducts(Order order, OrderRequest orderRequest, BigDecimal totalPrice) {
@@ -156,6 +184,8 @@ public class OrderServiceImpl implements OrderService {
     public GeneralResponseModel delete(Long id) {
         return null;
     }
+
+    // Eliminar un producto de la orden
 
     //    private List<Product> getProducts(List<OrderProduct> products) {
 //        List<Product> productList = new ArrayList<>();

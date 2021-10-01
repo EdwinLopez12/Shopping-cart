@@ -66,18 +66,34 @@ public class Order {
      * @param orderProduct the order product
      */
     public void addOrderProduct(OrderProduct orderProduct) {
-        boolean b = false;
+        boolean flag = false;
         if (orderProducts == null) {
             orderProducts = new ArrayList<>(Collections.singletonList(orderProduct));
         }else{
             for (OrderProduct op : orderProducts) {
                 if (op.getProduct().getId().equals(orderProduct.getProduct().getId())) {
                     op.setAmount(op.getAmount() + orderProduct.getAmount());
-                    b=true;
+                    flag=true;
                 }
             }
-            if (!b) orderProducts.add(orderProduct);
+            if (!flag) orderProducts.add(orderProduct);
         }
+    }
+
+    /**
+     * Update amount order product.
+     *
+     * @param orderProduct the order product
+     */
+    public void updateAmountOrderProduct(OrderProduct orderProduct) {
+        boolean flag = false;
+        for (OrderProduct op : orderProducts) {
+            if (op.getProduct().getId().equals(orderProduct.getProduct().getId())) {
+                op.setAmount(orderProduct.getAmount());
+                flag=true;
+            }
+        }
+        if (!flag) orderProducts.add(orderProduct);
     }
 
     /**
