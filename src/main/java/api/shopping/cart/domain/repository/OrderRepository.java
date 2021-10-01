@@ -1,5 +1,6 @@
 package api.shopping.cart.domain.repository;
 
+import api.shopping.cart.infrastructure.persistence.OrderStatus;
 import api.shopping.cart.infrastructure.persistence.entity.Order;
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,5 @@ public interface OrderRepository {
     Page<Order> findAllByDeletedAtIsNullAndUserData(Pageable pageable, UserData userData);
     void save(Order order);
     Optional<Order> findById(Long id);
+    Order findByUserDataAndStatusIsPending(UserData userData, OrderStatus orderStatus);
 }

@@ -28,7 +28,6 @@ public class OrderProducts {
 
     @JsonProperty
     @NotNull(message = "Product is required")
-    @Positive
     private Long id;
 
     @JsonProperty

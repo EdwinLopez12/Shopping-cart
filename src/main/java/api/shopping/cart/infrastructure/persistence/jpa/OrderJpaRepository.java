@@ -1,5 +1,6 @@
 package api.shopping.cart.infrastructure.persistence.jpa;
 
+import api.shopping.cart.infrastructure.persistence.OrderStatus;
 import api.shopping.cart.infrastructure.persistence.entity.Order;
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import org.springframework.data.domain.Page;
@@ -34,4 +35,9 @@ public interface OrderJpaRepository extends JpaRepository<Order, Long> {
             value = "SELECT o FROM Order o WHERE o.id = :id AND o.deletedAt IS NULL"
     )
     Optional<Order> findById(Long id);
+
+    @Query(
+            value = "SELECT o FROM Order o WHERE o.userData = :userData AND o.status = :status AND o.deletedAt IS NULL"
+    )
+    Order findByUserDataAndStatusIsPending(UserData userData, OrderStatus status);
 }

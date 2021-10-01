@@ -32,9 +32,9 @@ public class OrderMapper {
             orderResponse.setUserData(userMapper.userDataToUserResponse(order.getUserData()));
         }
         if (order.getCreatedAt() != null) orderResponse.setDate(FormatDates.instantToString(order.getCreatedAt()));
-        if (!order.getOrderProduct().isEmpty()) {
+        if (!order.getOrderProducts().isEmpty()) {
             List<ProductResponse> productResponses = new ArrayList<>();
-            for (OrderProduct orderProduct : order.getOrderProduct()) {
+            for (OrderProduct orderProduct : order.getOrderProducts()) {
                 orderProduct.getProduct().setTotal(orderProduct.getAmount());
                 orderProduct.getProduct().setPrice(orderProduct.getValue());
                 productResponses.add(productMapper.productToProductResponse(orderProduct.getProduct()));

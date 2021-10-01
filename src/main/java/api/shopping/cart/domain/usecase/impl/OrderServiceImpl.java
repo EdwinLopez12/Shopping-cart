@@ -1,18 +1,24 @@
 package api.shopping.cart.domain.usecase.impl;
 
+import api.shopping.cart.domain.dto.order.OrderProducts;
 import api.shopping.cart.domain.dto.order.OrderRequest;
 import api.shopping.cart.domain.dto.order.OrderResponse;
+import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.exception.PageableDataResponseModel;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
+import api.shopping.cart.domain.repository.OrderProductRepository;
 import api.shopping.cart.domain.repository.OrderRepository;
 import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.repository.UserDataRepository;
 import api.shopping.cart.domain.usecase.OrderService;
 import api.shopping.cart.domain.usecase.UserService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import api.shopping.cart.infrastructure.persistence.OrderStatus;
 import api.shopping.cart.infrastructure.persistence.entity.Order;
+import api.shopping.cart.infrastructure.persistence.entity.OrderProduct;
+import api.shopping.cart.infrastructure.persistence.entity.Product;
 import api.shopping.cart.infrastructure.persistence.entity.User;
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
@@ -24,6 +30,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static final String USER_NOT_FOUND = "The user doesn't exist or couldn't be found";
     private static final String ORDER_NOT_FOUND = "The order doesn't exist or couldn't be found";
+    private static final String PRODUCT_NOT_FOUND = "The product doesn't exist or couldn't be found";
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
@@ -86,9 +96,64 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+    private Order addOrderProducts(Order order, OrderRequest orderRequest) {
+        // TODO: Validar que la cantidad de unidades del pedido sea menor que la cantidad del inventario
+        if (!orderRequest.getProducts().isEmpty()) {
+            for (OrderProducts op : orderRequest.getProducts()) {
+                Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+                OrderProduct orderProduct = OrderProduct.builder()
+                        .order(order)
+                        .product(product)
+                        .amount(op.getAmount())
+                        .value(product.getPrice())
+                        .build();
+                // TODO: Sumar el valor de los nuevos productos al valor de la orden
+                order.addOrderProduct(orderProduct);
+            }
+            return order;
+        }else{
+            throw new ApiConflictException("NOT SELECTED PRODUCTS");
+        }
+    }
+
     @Override
     public GeneralResponseModel add(OrderRequest orderRequest) {
-        return null;
+        UserData userData = getUserData(userService.getCurrentUser());
+        Order order = orderRepository.findByUserDataAndStatusIsPending(userData, OrderStatus.PENDING);
+        if (order != null){
+            addOrderProducts(order, orderRequest);
+            OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
+            return generalMapper.responseToGeneralResponseModel(200, "add order", "Order created", Collections.singletonList(orderResponse), "Ok");
+        } else{
+            BigDecimal totalPrice = BigDecimal.valueOf(0);
+            Order orderToSave = Order.builder()
+                    .userData(userData)
+                    .status(OrderStatus.PENDING)
+                    .createdAt(Instant.now())
+                    .totalPayment(null)
+                    .build();
+            orderRepository.save(orderToSave);
+            List<OrderProduct> orderProducts = new ArrayList<>();
+            for (OrderProducts op : orderRequest.getProducts()) {
+                Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+
+                totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(op.getAmount())));
+
+                OrderProduct orderProduct = OrderProduct.builder()
+                        .order(orderToSave)
+                        .product(product)
+                        .amount(op.getAmount())
+                        .value(product.getPrice())
+                        .build();
+                orderProducts.add(orderProduct);
+            }
+            orderToSave.setTotalPayment(totalPrice);
+            orderToSave.setOrderProducts(orderProducts);
+            orderRepository.save(orderToSave);
+
+            OrderResponse orderResponse = orderMapper.orderToOrderResponse(orderToSave);
+            return generalMapper.responseToGeneralResponseModel(200, "add order", "Order created", Collections.singletonList(orderResponse), "Ok");
+        }
     }
 
     @Override

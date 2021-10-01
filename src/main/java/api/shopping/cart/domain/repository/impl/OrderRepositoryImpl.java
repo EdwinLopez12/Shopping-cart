@@ -1,6 +1,7 @@
 package api.shopping.cart.domain.repository.impl;
 
 import api.shopping.cart.domain.repository.OrderRepository;
+import api.shopping.cart.infrastructure.persistence.OrderStatus;
 import api.shopping.cart.infrastructure.persistence.entity.Order;
 import api.shopping.cart.infrastructure.persistence.entity.UserData;
 import api.shopping.cart.infrastructure.persistence.jpa.OrderJpaRepository;
@@ -42,5 +43,10 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Optional<Order> findById(Long id) {
         return orderJpaRepository.findById(id);
+    }
+
+    @Override
+    public Order findByUserDataAndStatusIsPending(UserData userData, OrderStatus orderStatus) {
+        return orderJpaRepository.findByUserDataAndStatusIsPending(userData, orderStatus);
     }
 }
