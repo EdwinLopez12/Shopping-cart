@@ -122,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public GeneralResponseModel VerifyAccount(String token) {
+    public GeneralResponseModel verifyAccount(String token) {
         Instant now = Instant.now();
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
         if (verificationToken.getExpiryDate().compareTo(now) >= 0) {
