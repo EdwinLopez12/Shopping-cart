@@ -34,25 +34,32 @@ public class MailServiceImpl implements MailService {
 
     @Override
     @Async
-    public void setUpEmailData(String subject, String title, String email, String body, String endPoint, String token) {
+    public void setUpEmailData(String template, String subject, String title, String email, String message, String button, String endPoint, String token) {
         NotificationEmailModel notificationEmailModel = NotificationEmailModel.builder()
                 .subject(subject)
                 .title(title)
                 .recipient(email)
-                .body(body)
-                .url(FULL_BASE_V1 + URL_AUTH_V1 + endPoint+"/"+token)
+                .message(message)
+                .button(button)
+                .url(String.format("%s%s/%s", FULL_BASE_V1+URL_AUTH_V1, endPoint, token))
                 .build();
-        sendEmail(notificationEmailModel);
+        sendEmail(notificationEmailModel, template);
     }
 
-    @Override
-    public void sendEmail(NotificationEmailModel notificationEmailModel) {
+    public void sendEmail(NotificationEmailModel notificationEmailModel, String template) {
         MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("carritocompras@mail.com");
+            messageHelper.setFrom("shoppingcart@mail.com");
             messageHelper.setTo(notificationEmailModel.getRecipient());
             messageHelper.setSubject(notificationEmailModel.getSubject());
-            messageHelper.setText(mailContentBuilder.build(notificationEmailModel.getTitle(), notificationEmailModel.getBody(), notificationEmailModel.getUrl()));
+            messageHelper.setText(
+                    mailContentBuilder.build(
+                            template,
+                            notificationEmailModel.getTitle(),
+                            notificationEmailModel.getMessage(),
+                            notificationEmailModel.getButton(),
+                            notificationEmailModel.getUrl()
+                    ), true);
         };
         try{
             javaMailSender.send(mimeMessagePreparator);

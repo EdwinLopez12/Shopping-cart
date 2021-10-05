@@ -52,7 +52,7 @@ public class JwtProvider {
             InputStream resourceAsStream = getClass().getResourceAsStream("/shoppingcart.jks");
             keyStore.load(resourceAsStream, secret.toCharArray());
         } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
-            throw new ApiException("Ocurrió una excepción mientras se cargaba el almacen de claves", e);
+            throw new ApiException("An exception occurred while loading the keystore", e);
         }
     }
 
@@ -79,7 +79,7 @@ public class JwtProvider {
         try {
             return keyStore.getKey("shoppingcart", secret.toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e){
-            throw new ApiException("Ocurrió una excepción mientras se obtenia la llave publica del baúl de claves", e);
+            throw new ApiException("An exception occurred while getting the public key from the keystore", e);
         }
     }
 
@@ -127,7 +127,7 @@ public class JwtProvider {
         try {
             return keyStore.getCertificate("shoppingcart").getPublicKey();
         } catch (KeyStoreException keyStoreException){
-            throw new ApiException("Ocurrió una excepción mientras se obtenia la llave pública", keyStoreException);
+            throw new ApiException("An exception occurred while getting the public key", keyStoreException);
         }
     }
 

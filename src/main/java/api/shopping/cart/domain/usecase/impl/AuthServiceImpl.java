@@ -95,7 +95,16 @@ public class AuthServiceImpl implements AuthService {
                     user.addRole(role);
                     userRepository.save(user);
                     String token = generateVerificationToken(user);
-                    mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_SIGNUP, MailData.END_POINT_SIGNUP, token);
+                    mailService.setUpEmailData(
+                            "verifyTemplate",
+                            MailData.SUBJECT,
+                            MailData.TITLE,
+                            user.getEmail(),
+                            MailData.MESSAGE_SIGNUP,
+                            "Verify account",
+                            MailData.END_POINT_SIGNUP,
+                            token
+                    );
                     return generalMapper.responseToGeneralResponseModel(201, "signup", "Account successfully created, please check the email to activate it!", null, "Ok");
                 }else{
                     throw new ApiConflictException(PASSWORDS_NOT_MATCH);
@@ -182,7 +191,16 @@ public class AuthServiceImpl implements AuthService {
                 .date(Instant.now())
                 .build();
         passwordResetRepository.save(passwordReset);
-        mailService.setUpEmailData(MailData.SUBJECT, MailData.TITLE, user.getEmail(), MailData.BODY_RESET_PASSWORD, MailData.END_POINT_RESET_PASSWORD, token);
+        mailService.setUpEmailData(
+                "verifyTemplate",
+                MailData.SUBJECT,
+                MailData.TITLE,
+                user.getEmail(),
+                MailData.MESSAGE_RESET_PASSWORD,
+                "Verify email",
+                MailData.END_POINT_RESET_PASSWORD,
+                token
+        );
         return generalMapper.responseToGeneralResponseModel(200, "send email reset password", "Email was sent!", null, "Ok");
     }
 

@@ -1,6 +1,6 @@
 package api.shopping.cart.domain.usecase;
 
-import api.shopping.cart.domain.model.NotificationEmailModel;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * MailService interface
@@ -12,6 +12,6 @@ import api.shopping.cart.domain.model.NotificationEmailModel;
 
 public interface MailService {
 
-    void setUpEmailData(String subject, String title, String email, String body, String endPoint, String token);
-    void sendEmail(NotificationEmailModel notificationEmailModel);
+    @Async
+    void setUpEmailData(String template, String subject, String title, String email, String message, String button, String endPoint, String token);
 }
