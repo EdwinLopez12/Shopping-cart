@@ -21,11 +21,12 @@ public class MailContentBuilderImpl implements MailContentBuilder {
     private final TemplateEngine templateEngine;
 
     @Override
-    public String build(String title, String message, String url) {
+    public String build(String template, String title, String message, String button, String url) {
         Context context = new Context();
         context.setVariable("title", title);
         context.setVariable("message", message);
+        context.setVariable("button", button);
         context.setVariable("url", url);
-        return templateEngine.process("mailTemplate", context);
+        return templateEngine.process(template, context);
     }
 }

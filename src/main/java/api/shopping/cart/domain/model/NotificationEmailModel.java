@@ -30,7 +30,10 @@ public class NotificationEmailModel {
     private String recipient;
 
     @JsonProperty
-    private String body;
+    private String message;
+
+    @JsonProperty
+    private String button;
 
     @JsonProperty
     private String url;

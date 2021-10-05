@@ -10,5 +10,5 @@ package api.shopping.cart.domain.usecase;
 
 public interface MailContentBuilder {
 
-    String build(String title, String message, String url);
+    String build(String template, String title, String message, String button, String url);
 }
