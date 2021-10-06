@@ -1,5 +1,7 @@
 package api.shopping.cart.infrastructure.controller;
 
+import api.shopping.cart.domain.dto.payment.PaymentOrderRequest;
+import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.PaymentService;
 import api.shopping.cart.infrastructure.RoutesMapping;
 import com.paypal.http.HttpResponse;
@@ -30,10 +32,29 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping
-    ResponseEntity<HttpResponse<Order>> payment() throws IOException {
+    /**
+     * Payment response entity.
+     *
+     * @param orderId the order id
+     * @return the response entity
+     * @throws IOException the io exception
+     */
+    @PostMapping("/order")
+    ResponseEntity<GeneralResponseModel> createOrder(@RequestBody String orderId) throws IOException {
 
-        HttpResponse<Order> response = paymentService.createOrder();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.createOrder(orderId), HttpStatus.OK);
+    }
+
+    /**
+     * Capture order response entity.
+     *
+     * @param orderPaymentId the order payment id
+     * @return the response entity
+     * @throws IOException the io exception
+     */
+    @PostMapping("/capture")
+    ResponseEntity<GeneralResponseModel> captureOrder(@RequestBody PaymentOrderRequest paymentOrderRequest) throws IOException {
+
+        return new ResponseEntity<>(paymentService.captureOrder(paymentOrderRequest), HttpStatus.OK);
     }
 }

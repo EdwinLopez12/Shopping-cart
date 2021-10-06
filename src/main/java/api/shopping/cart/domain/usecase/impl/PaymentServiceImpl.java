@@ -1,19 +1,28 @@
 package api.shopping.cart.domain.usecase.impl;
 
+import api.shopping.cart.domain.dto.payment.PaymentOrderRequest;
+import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.PaymentService;
+import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
+import com.alibaba.fastjson.JSONObject;
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
+import com.paypal.http.serializer.Json;
 import com.paypal.orders.AddressPortable;
 import com.paypal.orders.AmountBreakdown;
 import com.paypal.orders.AmountWithBreakdown;
 import com.paypal.orders.ApplicationContext;
+import com.paypal.orders.Capture;
+import com.paypal.orders.Payer;
 import com.paypal.orders.Item;
 import com.paypal.orders.LinkDescription;
 import com.paypal.orders.Money;
 import com.paypal.orders.Name;
 import com.paypal.orders.Order;
 import com.paypal.orders.OrderRequest;
+import com.paypal.orders.OrdersCaptureRequest;
 import com.paypal.orders.OrdersCreateRequest;
+import com.paypal.orders.PurchaseUnit;
 import com.paypal.orders.PurchaseUnitRequest;
 import com.paypal.orders.ShippingDetail;
 import lombok.AllArgsConstructor;
@@ -22,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,9 +47,10 @@ import java.util.List;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaypalService paypalService;
+    private final GeneralResponseModelMapper generalMapper;
 
     @Override
-    public HttpResponse<Order> createOrder() throws IOException {
+    public GeneralResponseModel createOrder(String orderID) throws IOException {
         PayPalHttpClient client = paypalService.client;
         OrdersCreateRequest request = new OrdersCreateRequest();
         request.prefer("return=representation");
@@ -54,13 +65,15 @@ public class PaymentServiceImpl implements PaymentService {
                 log.info("Intent: " + response.result().checkoutPaymentIntent());
                 log.info("Links: ");
                 for (LinkDescription link : response.result().links()) {
-                    System.out.println("\t" + link.rel() + ": " + link.href() + "\tCall Type: " + link.method());
+                    log.info("\t" + link.rel() + ": " + link.href() + "\tCall Type: " + link.method());
                 }
-                System.out.println("Total Amount: " + response.result().purchaseUnits().get(0).amountWithBreakdown().currencyCode()
+                log.info("Total Amount: " + response.result().purchaseUnits().get(0).amountWithBreakdown().currencyCode()
                         + " " + response.result().purchaseUnits().get(0).amountWithBreakdown().value());
+                log.info("Full response body:");
+                log.info(new JSONObject(Boolean.parseBoolean(new Json().serialize(response.result()))).toString());
             }
         }
-        return response;
+        return generalMapper.responseToGeneralResponseModel(200, "create order", "Payment with paypal success", Collections.singletonList(response.result().purchaseUnits().toArray()), "Ok");
     }
 
     private OrderRequest buildRequestBody() {
@@ -98,5 +111,42 @@ public class PaymentServiceImpl implements PaymentService {
         purchaseUnitRequests.add(purchaseUnitRequest);
         orderRequest.purchaseUnits(purchaseUnitRequests);
         return orderRequest;
+    }
+
+    private OrderRequest buildRequestBodyPayment() {
+        return new OrderRequest();
+    }
+
+    @Override
+    public GeneralResponseModel captureOrder(PaymentOrderRequest paymentOrderRequest) throws IOException {
+        PayPalHttpClient client = paypalService.client;
+        OrdersCaptureRequest request = new OrdersCaptureRequest(paymentOrderRequest.getOrderPaypalId());
+        request.requestBody(buildRequestBodyPayment());
+        request.header("Authorization", "Bearer A21AALm_9fEkuAjYSPYyhmtODOaXtEGAOK8Mn7xqMDKYWO7UfngeLQRseMXCetjimkDSZBrVqPLn8ekq4nodQvCZG2TvArFaw");
+
+        HttpResponse<Order> response = client.execute(request);
+        log.info(response.toString());
+        if (true) {
+            log.info("Status Code: " + response.statusCode());
+            log.info("Status: " + response.result().status());
+            log.info("Order ID: " + response.result().id());
+            log.info("Links: ");
+            for (LinkDescription link : response.result().links()) {
+                log.info("\t" + link.rel() + ": " + link.href());
+            }
+            log.info("Capture ids:");
+            for (PurchaseUnit purchaseUnit : response.result().purchaseUnits()) {
+                for (Capture capture : purchaseUnit.payments().captures()) {
+                    log.info("\t" + capture.id());
+                }
+            }
+            log.info("Buyer: ");
+            Payer buyer = response.result().payer();
+            log.info("\tEmail Address: " + buyer.email());
+            log.info("\tName: " + buyer.name().givenName() + " " + buyer.name().surname());
+            log.info("Full response body:");
+            log.info(new JSONObject(Boolean.parseBoolean(new Json().serialize(response.result()))).toString());
+        }
+        return generalMapper.responseToGeneralResponseModel(200, "capture order", "Order captured", Collections.singletonList(response.result()), "Ok");
     }
 }
