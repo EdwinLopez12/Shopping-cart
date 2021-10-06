@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * PaymentOrderRequest class
+ * OrderPaypalRequest class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
@@ -21,8 +21,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PaymentOrderRequest {
+public class OrderPaypalRequest {
 
     @JsonProperty
-    private String orderPaypalId;
+    private String orderId;
 }

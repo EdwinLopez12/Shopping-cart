@@ -1,11 +1,10 @@
 package api.shopping.cart.infrastructure.controller;
 
-import api.shopping.cart.domain.dto.payment.PaymentOrderRequest;
+import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
+import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.PaymentService;
 import api.shopping.cart.infrastructure.RoutesMapping;
-import com.paypal.http.HttpResponse;
-import com.paypal.orders.Order;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,26 +34,26 @@ public class PaymentController {
     /**
      * Payment response entity.
      *
-     * @param orderId the order id
+     * @param orderPaypalRequest the order paypal request
      * @return the response entity
      * @throws IOException the io exception
      */
     @PostMapping("/order")
-    ResponseEntity<GeneralResponseModel> createOrder(@RequestBody String orderId) throws IOException {
+    ResponseEntity<GeneralResponseModel> createOrder(@RequestBody OrderPaypalRequest orderPaypalRequest) throws IOException {
 
-        return new ResponseEntity<>(paymentService.createOrder(orderId), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.createOrder(orderPaypalRequest), HttpStatus.OK);
     }
 
     /**
      * Capture order response entity.
      *
-     * @param orderPaymentId the order payment id
+     * @param paymentPaypalRequest the payment order request
      * @return the response entity
      * @throws IOException the io exception
      */
     @PostMapping("/capture")
-    ResponseEntity<GeneralResponseModel> captureOrder(@RequestBody PaymentOrderRequest paymentOrderRequest) throws IOException {
+    ResponseEntity<GeneralResponseModel> captureOrder(@RequestBody PaymentPaypalRequest paymentPaypalRequest) throws IOException {
 
-        return new ResponseEntity<>(paymentService.captureOrder(paymentOrderRequest), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.captureOrder(paymentPaypalRequest), HttpStatus.OK);
     }
 }

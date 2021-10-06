@@ -173,6 +173,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel delete(Long id) {
+        // TODO : change order status to CANCELLED
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
         order.setDeletedAt(Instant.now());
         orderRepository.save(order);

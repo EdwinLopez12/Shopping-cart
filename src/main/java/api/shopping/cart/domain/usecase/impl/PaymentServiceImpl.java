@@ -1,6 +1,7 @@
 package api.shopping.cart.domain.usecase.impl;
 
-import api.shopping.cart.domain.dto.payment.PaymentOrderRequest;
+import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
+import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.PaymentService;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
@@ -50,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final GeneralResponseModelMapper generalMapper;
 
     @Override
-    public GeneralResponseModel createOrder(String orderID) throws IOException {
+    public GeneralResponseModel createOrder(OrderPaypalRequest orderPaypalRequest) throws IOException {
         PayPalHttpClient client = paypalService.client;
         OrdersCreateRequest request = new OrdersCreateRequest();
         request.prefer("return=representation");
@@ -118,9 +119,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public GeneralResponseModel captureOrder(PaymentOrderRequest paymentOrderRequest) throws IOException {
+    public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
         PayPalHttpClient client = paypalService.client;
-        OrdersCaptureRequest request = new OrdersCaptureRequest(paymentOrderRequest.getOrderPaypalId());
+        OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
         request.requestBody(buildRequestBodyPayment());
         request.header("Authorization", "Bearer A21AALm_9fEkuAjYSPYyhmtODOaXtEGAOK8Mn7xqMDKYWO7UfngeLQRseMXCetjimkDSZBrVqPLn8ekq4nodQvCZG2TvArFaw");
 

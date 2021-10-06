@@ -1,6 +1,7 @@
 package api.shopping.cart.domain.usecase;
 
-import api.shopping.cart.domain.dto.payment.PaymentOrderRequest;
+import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
+import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 
 import java.io.IOException;
@@ -14,6 +15,6 @@ import java.io.IOException;
  */
 public interface PaymentService {
 
-    GeneralResponseModel createOrder(String orderId) throws IOException;
-    GeneralResponseModel captureOrder(PaymentOrderRequest paymentOrderRequest) throws IOException;
+    GeneralResponseModel createOrder(OrderPaypalRequest orderPaypalRequest) throws IOException;
+    GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException;
 }
