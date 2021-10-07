@@ -2,6 +2,7 @@ package api.shopping.cart.infrastructure.controller;
 
 import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
 import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
+import api.shopping.cart.domain.dto.payment.PaymentRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.PaymentService;
 import api.shopping.cart.infrastructure.RoutesMapping;
@@ -31,6 +32,12 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    @PostMapping
+    public ResponseEntity<GeneralResponseModel> addPayment(@RequestBody PaymentRequest paymentRequest) {
+
+        return new ResponseEntity<>(paymentService.addPayment(paymentRequest), HttpStatus.CREATED);
+    }
+
     /**
      * Payment response entity.
      *
@@ -39,7 +46,7 @@ public class PaymentController {
      * @throws IOException the io exception
      */
     @PostMapping("/order")
-    ResponseEntity<GeneralResponseModel> createOrder(@RequestBody OrderPaypalRequest orderPaypalRequest) throws IOException {
+    public ResponseEntity<GeneralResponseModel> createOrder(@RequestBody OrderPaypalRequest orderPaypalRequest) throws IOException {
 
         return new ResponseEntity<>(paymentService.createOrder(orderPaypalRequest), HttpStatus.OK);
     }
@@ -52,7 +59,7 @@ public class PaymentController {
      * @throws IOException the io exception
      */
     @PostMapping("/capture")
-    ResponseEntity<GeneralResponseModel> captureOrder(@RequestBody PaymentPaypalRequest paymentPaypalRequest) throws IOException {
+    public ResponseEntity<GeneralResponseModel> captureOrder(@RequestBody PaymentPaypalRequest paymentPaypalRequest) throws IOException {
 
         return new ResponseEntity<>(paymentService.captureOrder(paymentPaypalRequest), HttpStatus.OK);
     }

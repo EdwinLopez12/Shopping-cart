@@ -2,8 +2,20 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
 import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
+import api.shopping.cart.domain.dto.payment.PaymentRequest;
+import api.shopping.cart.domain.exception.ApiConflictException;
+import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.model.GeneralResponseModel;
+import api.shopping.cart.domain.repository.OrderRepository;
+import api.shopping.cart.domain.repository.PaymentRepository;
+import api.shopping.cart.domain.repository.ProductRepository;
 import api.shopping.cart.domain.usecase.PaymentService;
+import api.shopping.cart.domain.usecase.UserService;
+import api.shopping.cart.infrastructure.persistence.OrderStatus;
+import api.shopping.cart.infrastructure.persistence.entity.OrderProduct;
+import api.shopping.cart.infrastructure.persistence.entity.Payment;
+import api.shopping.cart.infrastructure.persistence.entity.Product;
+import api.shopping.cart.infrastructure.persistence.entity.User;
 import api.shopping.cart.infrastructure.persistence.mapper.GeneralResponseModelMapper;
 import com.alibaba.fastjson.JSONObject;
 import com.paypal.core.PayPalHttpClient;
@@ -31,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,17 +60,89 @@ import java.util.List;
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
+    private static final String ORDER_NOT_FOUND = "The order doesn't exist or couldn't be found";
+    private static final String PRODUCT_NOT_FOUND = "The order doesn't exist or couldn't be found";
+    private static final String PRODUCT_NOT_ENOUGH = "There are not enough products for : ";
+    private static final String PAYMENT_METHOD_NO_VALID = "The payment method is not valid";
+
     private final PaypalService paypalService;
+    private final UserService userService;
+
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final ProductRepository productRepository;
+
     private final GeneralResponseModelMapper generalMapper;
+
+
+    @Override
+    public GeneralResponseModel addPayment(PaymentRequest paymentRequest) {
+        switch (paymentRequest.getPaymentMethod()) {
+            // TODO: implement other payment methods
+            case CASH:
+            case CREDIT_CART:
+            case DEBIT_CART:
+                createPaymentObject(paymentRequest);
+                break;
+            case PAYPAL:
+                break;
+            default:
+                throw new ApiConflictException(PAYMENT_METHOD_NO_VALID);
+        }
+        return null;
+    }
+
+    private void createPaymentObject(PaymentRequest paymentRequest) {
+        api.shopping.cart.infrastructure.persistence.entity.Order order = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
+
+        validateProductsExistence(order);
+
+        User user = userService.getCurrentUser();
+        Payment payment = new Payment();
+        payment.setTotalPayment(order.getTotalPayment());
+        payment.setOrder(order);
+        payment.setUser(user);
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        payment.setDate(Instant.now());
+        if (!paymentRequest.getPaymentPaypalId().isEmpty()) payment.setPaymentPaypalId(payment.getPaymentPaypalId());
+        paymentRepository.save(payment);
+        order.setStatus(OrderStatus.PAID);
+        orderRepository.save(order);
+    }
+
+    private void validateProductsExistence(api.shopping.cart.infrastructure.persistence.entity.Order order){
+        for (OrderProduct op : order.getOrderProducts()) {
+            Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+            if (op.getAmount() > product.getTotal()) {
+                throw new ApiConflictException(PRODUCT_NOT_ENOUGH + product.getName());
+            }
+        }
+    }
 
     @Override
     public GeneralResponseModel createOrder(OrderPaypalRequest orderPaypalRequest) throws IOException {
+
+        api.shopping.cart.infrastructure.persistence.entity.Order basicOrder = orderRepository.findById(Long.valueOf(orderPaypalRequest.getOrderId())).orElseThrow(() -> new ApiNotFoundException("ORDER NOT FOUND"));
+
         PayPalHttpClient client = paypalService.client;
+
         OrdersCreateRequest request = new OrdersCreateRequest();
         request.prefer("return=representation");
         request.requestBody(buildRequestBody());
-        //3. Call PayPal to set up a transaction
+
+        // Call PayPal to set up a transaction
         HttpResponse<Order> response = client.execute(request);
+
+        if (response.statusCode() == 201) {
+            Payment payment = Payment.builder()
+                    .order(basicOrder)
+                    .totalPayment(basicOrder.getTotalPayment())
+                    .date(Instant.now())
+                    .user(userService.getCurrentUser())
+
+                    .build();
+        }
+
         if (true) {
             if (response.statusCode() == 201) {
                 log.info("Status Code: " + response.statusCode());
