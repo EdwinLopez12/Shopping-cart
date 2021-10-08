@@ -142,7 +142,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         api.shopping.cart.infrastructure.persistence.entity.Order basicOrder = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
 
-        PayPalHttpClient client = paypalService.client;
+        PayPalHttpClient client = paypalService.client();
 
         OrdersCreateRequest request = new OrdersCreateRequest();
         request.prefer("return=representation");
@@ -229,7 +229,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
-        PayPalHttpClient client = paypalService.client;
+        PayPalHttpClient client = paypalService.client();
         OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
         request.requestBody(buildRequestBodyPayment());
         request.header("Authorization", "Bearer " + paymentPaypalRequest.getToken());
