@@ -171,9 +171,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public GeneralResponseModel delete(Long id) {
-        // TODO : change order status to CANCELLED
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
         order.setDeletedAt(Instant.now());
+        order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
         return generalMapper.responseToGeneralResponseModel(200, "delete order", "Order deleted", null, "Ok");
     }
