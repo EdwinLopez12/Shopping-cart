@@ -1,6 +1,7 @@
 package api.shopping.cart.domain.dto.payment;
 
 import api.shopping.cart.infrastructure.persistence.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
 public class PaymentRequest {
 
     @JsonProperty
+    @JsonIgnore
     private String paypalOrderId = null;
 
     @JsonProperty

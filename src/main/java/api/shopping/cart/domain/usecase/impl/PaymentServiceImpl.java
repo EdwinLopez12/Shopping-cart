@@ -184,12 +184,11 @@ public class PaymentServiceImpl implements PaymentService {
         List<Item> items = new ArrayList<>();
 
         for (OrderProduct op : order.getOrderProducts()) {
-            String sku = String.valueOf(op.getProduct().getTotal() - op.getAmount());
             taxTotal = taxTotal.add(taxBase.multiply(BigDecimal.valueOf(op.getAmount())));
             Item item = new Item()
                     .name(op.getProduct().getName())
                     .description(op.getProduct().getDescription())
-                    .sku(sku)
+                    .sku(op.getProduct().getCode())
                     .unitAmount(new Money().currencyCode("USD").value(op.getValue().toString()))
                     .tax(new Money().currencyCode("USD").value("1.00"))
                     .quantity(op.getAmount().toString());
@@ -201,7 +200,7 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal shippingDiscount = BigDecimal.valueOf(10.00);
         BigDecimal unitsValue = order.getTotalPayment();
         BigDecimal valueTotalWithTaxes = unitsValue.add(taxTotal).add(shipping).add(handling).subtract(shippingDiscount);
-        
+
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId("PUHF")
                 .description("DESCRIPTION").customId("CUST-ID").softDescriptor("DESCRIPTOR")
                 .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(valueTotalWithTaxes.toString())
@@ -211,26 +210,30 @@ public class PaymentServiceImpl implements PaymentService {
                                 .taxTotal(new Money().currencyCode("USD").value(taxTotal.toString()))
                                 .shippingDiscount(new Money().currencyCode("USD").value(shippingDiscount.toString()))))
                 .items(items)
-                .shippingDetail(new ShippingDetail().name(new Name().fullName(order.getUserData().getFullName()))
-                        .addressPortable(new AddressPortable().addressLine1(order.getUserData().getAddress()).addressLine2("Floor 6")
-                                .adminArea2(order.getUserData().getState().getTownName()).adminArea1(order.getUserData().getState().getDaneCodeTown()).postalCode("94107").countryCode(order.getUserData().getState().getCountry().getIso2())));
+                .shippingDetail(
+                        new ShippingDetail()
+                                .name(new Name().fullName("Shopping Cart"))
+                                .addressPortable(new AddressPortable()
+                                        .addressLine1("123 Townsend St")
+                                        .addressLine2("Floor 6")
+                                .adminArea2("San Francisco")
+                                        .adminArea1("CA")
+                                        .postalCode("94107")
+                                        .countryCode("US")));
+
         purchaseUnitRequests.add(purchaseUnitRequest);
         orderRequest.purchaseUnits(purchaseUnitRequests);
         return orderRequest;
     }
 
-    private OrderRequest buildRequestBodyPayment() {
-        return new OrderRequest();
-    }
-
     @Override
     public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
-        // TODO: Generar un bearer token antes de enviar la petición
         // TODO: Verificar datos al crear order (Resta cantidad de productos)
+        // TODO: Retonar los datos de la compra
         PayPalHttpClient client = paypalService.client;
         OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
         request.requestBody(buildRequestBodyPayment());
-        request.header("Authorization", "Bearer A21AAKZWmSqltNg9gl_bhw1AaD1ntWtnHRx8r71cvoRS0vDKI0mQ03ZMKvmVFDe0gQ7ihQjFy58Nwxjm4QoTW5FnwuUaaMtgQ");
+        request.header("Authorization", "Bearer " + paymentPaypalRequest.getToken());
 
         HttpResponse<Order> response = client.execute(request);
         log.info(response.toString());
@@ -253,8 +256,11 @@ public class PaymentServiceImpl implements PaymentService {
             log.info("\tEmail Address: " + buyer.email());
             log.info("\tName: " + buyer.name().givenName() + " " + buyer.name().surname());
             log.info("Full response body:");
-            log.info(new JSONObject(Boolean.parseBoolean(new Json().serialize(response.result()))).toString());
         }
         return generalMapper.responseToGeneralResponseModel(200, "capture order", "Order captured", Collections.singletonList(response.result()), "Ok");
+    }
+
+    private OrderRequest buildRequestBodyPayment() {
+        return new OrderRequest();
     }
 }

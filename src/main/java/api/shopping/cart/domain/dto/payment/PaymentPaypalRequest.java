@@ -25,4 +25,7 @@ public class PaymentPaypalRequest {
 
     @JsonProperty
     private String orderPaypalId;
+
+    @JsonProperty
+    private String token;
 }
