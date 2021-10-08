@@ -2,6 +2,7 @@ package api.shopping.cart.domain.dto.payment;
 
 import api.shopping.cart.domain.dto.order.OrderResponse;
 import api.shopping.cart.domain.dto.user.UserDataResponse;
+import api.shopping.cart.domain.model.Link;
 import api.shopping.cart.infrastructure.persistence.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * PaymenResponse class
@@ -31,4 +33,5 @@ public class PaymentResponse {
     private String date;
     private PaymentMethod paymentMethod;
     private OrderResponse orderResponse;
+    private List<Link> links;
 }

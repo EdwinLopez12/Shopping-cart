@@ -117,27 +117,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void updateOrSaveOrderProducts(Order order, OrderRequest orderRequest, String option) {
-        if (!orderRequest.getProducts().isEmpty()) {
-            for (OrderProducts op : orderRequest.getProducts()) {
+        if (orderRequest.getProducts().isEmpty()) throw new ApiConflictException(ORDER_REQUEST_NOT_HAVE_PRODUCTS);
 
-                Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
+        for (OrderProducts op : orderRequest.getProducts()) {
 
-                if (op.getAmount() > product.getTotal()) throw new ApiConflictException(PRODUCT_NOT_ENOUGH);
+            Product product = productRepository.findById(op.getId()).orElseThrow(() -> new ApiNotFoundException(PRODUCT_NOT_FOUND));
 
-                OrderProduct orderProduct = OrderProduct.builder()
-                        .order(order)
-                        .product(product)
-                        .amount(op.getAmount())
-                        .value(product.getPrice())
-                        .build();
-                if (option.equals("ADD")) order.addOrderProduct(orderProduct);
-                if (option.equals("EDIT")) order.updateAmountOrderProduct(orderProduct);
+            if (op.getAmount() > product.getTotal()) throw new ApiConflictException(PRODUCT_NOT_ENOUGH);
 
-            }
-            order.setTotalPayment(calcTotalPayment(order));
-        }else{
-            throw new ApiConflictException(ORDER_REQUEST_NOT_HAVE_PRODUCTS);
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .order(order)
+                    .product(product)
+                    .amount(op.getAmount())
+                    .value(product.getPrice())
+                    .build();
+            if (option.equals("ADD")) order.addOrderProduct(orderProduct);
+            if (option.equals("EDIT")) order.updateAmountOrderProduct(orderProduct);
+
         }
+        order.setTotalPayment(calcTotalPayment(order));
     }
 
     private GeneralResponseModel generalResponse(Object o) {
@@ -150,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
         UserData userData = getUserData(userService.getCurrentUser());
         Order order = orderRepository.findByUserDataAndStatusIsPending(userData, OrderStatus.PENDING);
         if (order != null){
-            updateOrSaveOrderProducts(order, orderRequest, "ADD");
+            updateOrSaveOrderProducts(order, orderRequest, "EDIT");
             orderRepository.save(order);
             OrderResponse orderResponse = orderMapper.orderToOrderResponse(order);
             return generalResponse(orderResponse);

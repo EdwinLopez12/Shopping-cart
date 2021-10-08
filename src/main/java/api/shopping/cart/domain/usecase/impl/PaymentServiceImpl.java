@@ -2,6 +2,7 @@ package api.shopping.cart.domain.usecase.impl;
 
 import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
 import api.shopping.cart.domain.dto.payment.PaymentRequest;
+import api.shopping.cart.domain.dto.payment.PaymentResponse;
 import api.shopping.cart.domain.exception.ApiConflictException;
 import api.shopping.cart.domain.exception.ApiNotFoundException;
 import api.shopping.cart.domain.model.GeneralResponseModel;
@@ -90,17 +91,16 @@ public class PaymentServiceImpl implements PaymentService {
             case CREDIT_CART:
             case DEBIT_CART:
                 Payment payment = createPaymentObject(paymentRequest, OrderStatus.PAID);
-                return generalMapper.responseToGeneralResponseModel(201, "add payment", "Payment succesfully", Collections.singletonList(paymentMapper.paymentToPaymentResponse(payment)), "Ok");
+                return generalMapper.responseToGeneralResponseModel(201, "add payment", "Payment paid successfully", Collections.singletonList(paymentMapper.paymentToPaymentResponse(payment, null)), "Ok");
             case PAYPAL:
-                Payment paymentPaypal = createOrder(paymentRequest);
-                return generalMapper.responseToGeneralResponseModel(201, "add payment", "Payment succesfully", Collections.singletonList(paymentMapper.paymentToPaymentResponse(paymentPaypal)), "Ok");
+                PaymentResponse paymentResponse = createOrder(paymentRequest);
+                return generalMapper.responseToGeneralResponseModel(201, "add payment", "Payment pending", Collections.singletonList(paymentResponse), "Ok");
             default:
                 throw new ApiConflictException(PAYMENT_METHOD_NO_VALID);
         }
     }
 
     private Payment createPaymentObject(PaymentRequest paymentRequest, OrderStatus orderStatus) {
-        // TODO: restar cantidad de productos cuando la compra está pagada
         api.shopping.cart.infrastructure.persistence.entity.Order order = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
 
         List<Product> products = validateProductsExistence(order.getOrderProducts());
@@ -112,7 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setUser(userData);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setDate(Instant.now());
-        if (!paymentRequest.getPaypalOrderId().isEmpty()) payment.setPaypalOrderId(payment.getPaypalOrderId());
+        if (!paymentRequest.getPaypalOrderId().isEmpty()) payment.setPaypalOrderId(paymentRequest.getPaypalOrderId());
         paymentRepository.save(payment);
         order.setStatus(orderStatus);
         orderRepository.save(order);
@@ -136,7 +136,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment createOrder(PaymentRequest paymentRequest) throws IOException {
+    public PaymentResponse createOrder(PaymentRequest paymentRequest) throws IOException {
 
         api.shopping.cart.infrastructure.persistence.entity.Order basicOrder = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
 
@@ -146,7 +146,6 @@ public class PaymentServiceImpl implements PaymentService {
         request.prefer("return=representation");
         request.requestBody(buildRequestBody());
 
-        // Call PayPal to set up a transaction
         HttpResponse<Order> response = client.execute(request);
 
         if (response.statusCode() == 201) {
@@ -163,9 +162,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
             log.info("Total Amount: " + response.result().purchaseUnits().get(0).amountWithBreakdown().currencyCode()
                     + " " + response.result().purchaseUnits().get(0).amountWithBreakdown().value());
-            log.info("Full response body:");
-            log.info(new JSONObject(Boolean.parseBoolean(new Json().serialize(response.result()))).toString());
-            return payment;
+            return paymentMapper.paymentToPaymentResponse(payment, response.result().links());
         }
         return null;
     }
@@ -213,6 +210,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
+        // TODO: Verificar datos al crear order (Resta cantidad de productos)
         PayPalHttpClient client = paypalService.client;
         OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
         request.requestBody(buildRequestBodyPayment());
