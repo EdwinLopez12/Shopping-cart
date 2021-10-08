@@ -1,9 +1,10 @@
 package api.shopping.cart.domain.usecase;
 
-import api.shopping.cart.domain.dto.payment.OrderPaypalRequest;
 import api.shopping.cart.domain.dto.payment.PaymentPaypalRequest;
 import api.shopping.cart.domain.dto.payment.PaymentRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
+import api.shopping.cart.infrastructure.persistence.entity.Payment;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -16,7 +17,8 @@ import java.io.IOException;
  */
 public interface PaymentService {
 
-    GeneralResponseModel addPayment(PaymentRequest paymentRequest);
-    GeneralResponseModel createOrder(OrderPaypalRequest orderPaypalRequest) throws IOException;
+    @Transactional
+    GeneralResponseModel addPayment(PaymentRequest paymentRequest) throws IOException;
+    Payment createOrder(PaymentRequest paymentRequest) throws IOException;
     GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException;
 }

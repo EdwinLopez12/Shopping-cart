@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 public class PaymentRequest {
 
     @JsonProperty
-    private String paymentPaypalId;
+    private String paypalOrderId = null;
 
     @JsonProperty
     @NotBlank(message = "Payment method is required")

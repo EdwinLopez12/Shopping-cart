@@ -39,7 +39,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentPaypalId;
+    private String paypalOrderId;
 
     @Column(nullable = false)
     private BigDecimal totalPayment;
@@ -55,5 +55,5 @@ public class Payment {
     private Order order;
 
     @ManyToOne
-    private User user;
+    private UserData user;
 }

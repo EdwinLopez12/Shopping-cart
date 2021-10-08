@@ -33,23 +33,23 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<GeneralResponseModel> addPayment(@RequestBody PaymentRequest paymentRequest) {
+    public ResponseEntity<GeneralResponseModel> addPayment(@RequestBody PaymentRequest paymentRequest) throws IOException {
 
         return new ResponseEntity<>(paymentService.addPayment(paymentRequest), HttpStatus.CREATED);
     }
 
-    /**
-     * Payment response entity.
-     *
-     * @param orderPaypalRequest the order paypal request
-     * @return the response entity
-     * @throws IOException the io exception
-     */
-    @PostMapping("/order")
-    public ResponseEntity<GeneralResponseModel> createOrder(@RequestBody OrderPaypalRequest orderPaypalRequest) throws IOException {
-
-        return new ResponseEntity<>(paymentService.createOrder(orderPaypalRequest), HttpStatus.OK);
-    }
+//    /**
+//     * Payment response entity.
+//     *
+//     * @param orderPaypalRequest the order paypal request
+//     * @return the response entity
+//     * @throws IOException the io exception
+//     */
+//    @PostMapping("/order")
+//    public ResponseEntity<GeneralResponseModel> createOrder(@RequestBody OrderPaypalRequest orderPaypalRequest) throws IOException {
+//
+//        return new ResponseEntity<>(paymentService.createOrder(orderPaypalRequest), HttpStatus.OK);
+//    }
 
     /**
      * Capture order response entity.

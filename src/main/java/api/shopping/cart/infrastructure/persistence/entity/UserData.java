@@ -60,4 +60,8 @@ public class UserData {
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    public String getFullName() {
+        return name + " " + lastName;
+    }
 }

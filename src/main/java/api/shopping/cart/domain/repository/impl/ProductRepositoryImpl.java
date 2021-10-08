@@ -45,6 +45,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public void saveAll(List<Product> products) {
+        productJpaRepository.saveAll(products);
+    }
+
+    @Override
     public Page<Product> findAllByDeletedAtIsNotNull(Pageable pageable) {
         return productJpaRepository.findAllByDeletedAtIsNotNull(pageable);
     }
