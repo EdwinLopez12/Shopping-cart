@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -206,7 +207,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public GeneralResponseModel verifyTokenToResetPassword(String token) {
-        passwordResetRepository.findByToken(token).orElseThrow(() -> new ApiNotFoundException(TOKEN_NOT_FOUND));
+        Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
+        if (!passwordReset.isPresent()) throw new ApiNotFoundException(TOKEN_NOT_FOUND);
         return generalMapper.responseToGeneralResponseModel(200, "Verify token", "Verified token", null, "Ok");
     }
 

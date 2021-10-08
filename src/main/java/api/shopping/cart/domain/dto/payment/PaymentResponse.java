@@ -1,7 +1,6 @@
 package api.shopping.cart.domain.dto.payment;
 
 import api.shopping.cart.domain.dto.order.OrderResponse;
-import api.shopping.cart.domain.dto.user.UserDataResponse;
 import api.shopping.cart.domain.model.Link;
 import api.shopping.cart.infrastructure.persistence.PaymentMethod;
 import lombok.AllArgsConstructor;
