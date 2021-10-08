@@ -6,6 +6,8 @@ import api.shopping.cart.infrastructure.persistence.jpa.PaymentJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * PaymentRepositoryImpl class
  *
@@ -22,5 +24,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     @Override
     public void save(Payment payment) {
         paymentJpaRepository.save(payment);
+    }
+
+    @Override
+    public Optional<Payment> findByPaypalOrderId(String id) {
+        return paymentJpaRepository.findByPaypalOrderId(id);
     }
 }

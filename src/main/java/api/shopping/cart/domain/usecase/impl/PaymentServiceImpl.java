@@ -70,6 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final String USER_NOT_FOUND = "The user doesn't exist or couldn't be found";
     private static final String PRODUCT_NOT_ENOUGH = "There are not enough products for : ";
     private static final String PAYMENT_METHOD_NO_VALID = "The payment method is not valid";
+    private static final String PAYMENT_NO_EXIST = "The payment doesn't exist or couldn't be found";
 
     private final PaypalService paypalService;
     private final UserService userService;
@@ -228,16 +229,20 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
-        // TODO: Verificar datos al crear order (Resta cantidad de productos)
-        // TODO: Retonar los datos de la compra
         PayPalHttpClient client = paypalService.client;
         OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
         request.requestBody(buildRequestBodyPayment());
         request.header("Authorization", "Bearer " + paymentPaypalRequest.getToken());
 
         HttpResponse<Order> response = client.execute(request);
-        log.info(response.toString());
-        if (true) {
+
+        if (response.statusCode() == 201) {
+
+            Payment payment = paymentRepository.findByPaypalOrderId(paymentPaypalRequest.getOrderPaypalId()).orElseThrow(() -> new ApiNotFoundException(PAYMENT_NO_EXIST));
+            List<Product> products = validateProductsExistence(payment.getOrder().getOrderProducts());
+            productRepository.saveAll(products);
+            payment.getOrder().setStatus(OrderStatus.PAID);
+            paymentRepository.save(payment);
             log.info("Status Code: " + response.statusCode());
             log.info("Status: " + response.result().status());
             log.info("Order ID: " + response.result().id());
@@ -255,9 +260,9 @@ public class PaymentServiceImpl implements PaymentService {
             Payer buyer = response.result().payer();
             log.info("\tEmail Address: " + buyer.email());
             log.info("\tName: " + buyer.name().givenName() + " " + buyer.name().surname());
-            log.info("Full response body:");
+            return generalMapper.responseToGeneralResponseModel(200, "capture order", "Order captured", Collections.singletonList(paymentMapper.paymentToPaymentResponse(payment, response.result().links())), "Ok");
         }
-        return generalMapper.responseToGeneralResponseModel(200, "capture order", "Order captured", Collections.singletonList(response.result()), "Ok");
+        return null;
     }
 
     private OrderRequest buildRequestBodyPayment() {

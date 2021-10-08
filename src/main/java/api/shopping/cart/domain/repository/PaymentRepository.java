@@ -2,6 +2,8 @@ package api.shopping.cart.domain.repository;
 
 import api.shopping.cart.infrastructure.persistence.entity.Payment;
 
+import java.util.Optional;
+
 /**
  * PaymentRepository inteface
  *
@@ -11,4 +13,5 @@ import api.shopping.cart.infrastructure.persistence.entity.Payment;
  */
 public interface PaymentRepository {
     void save(Payment payment);
+    Optional<Payment> findByPaypalOrderId(String id);
 }

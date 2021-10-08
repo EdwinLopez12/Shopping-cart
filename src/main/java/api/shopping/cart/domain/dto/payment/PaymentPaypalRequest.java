@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * PaymentOrderRequest class
  *
@@ -24,8 +26,10 @@ import lombok.Setter;
 public class PaymentPaypalRequest {
 
     @JsonProperty
+    @NotBlank(message = "Order paypal id is required")
     private String orderPaypalId;
 
     @JsonProperty
+    @NotBlank(message = "Token is required")
     private String token;
 }
