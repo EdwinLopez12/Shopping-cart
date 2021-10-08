@@ -47,6 +47,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,7 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         OrdersCreateRequest request = new OrdersCreateRequest();
         request.prefer("return=representation");
-        request.requestBody(buildRequestBody());
+        request.requestBody(buildRequestBody(basicOrder));
 
         HttpResponse<Order> response = client.execute(request);
 
@@ -167,38 +168,52 @@ public class PaymentServiceImpl implements PaymentService {
         return null;
     }
 
-    private OrderRequest buildRequestBody() {
+    private OrderRequest buildRequestBody(api.shopping.cart.infrastructure.persistence.entity.Order order) {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.checkoutPaymentIntent("CAPTURE");
 
-        ApplicationContext applicationContext = new ApplicationContext().brandName("EXAMPLE INC").landingPage("BILLING")
+        ApplicationContext applicationContext = new ApplicationContext().brandName("SHOPPING CART INC").landingPage("BILLING")
                 .shippingPreference("SET_PROVIDED_ADDRESS");
         orderRequest.applicationContext(applicationContext);
 
-        List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<PurchaseUnitRequest>();
+        List<PurchaseUnitRequest> purchaseUnitRequests = new ArrayList<>();
+
+        BigDecimal taxTotal = BigDecimal.valueOf(0.00);
+        BigDecimal taxBase = BigDecimal.valueOf(1.00);
+
+        List<Item> items = new ArrayList<>();
+
+        for (OrderProduct op : order.getOrderProducts()) {
+            String sku = String.valueOf(op.getProduct().getTotal() - op.getAmount());
+            taxTotal = taxTotal.add(taxBase.multiply(BigDecimal.valueOf(op.getAmount())));
+            Item item = new Item()
+                    .name(op.getProduct().getName())
+                    .description(op.getProduct().getDescription())
+                    .sku(sku)
+                    .unitAmount(new Money().currencyCode("USD").value(op.getValue().toString()))
+                    .tax(new Money().currencyCode("USD").value("1.00"))
+                    .quantity(op.getAmount().toString());
+            items.add(item);
+        }
+
+        BigDecimal shipping = BigDecimal.valueOf(30.00);
+        BigDecimal handling = BigDecimal.valueOf(10.00);
+        BigDecimal shippingDiscount = BigDecimal.valueOf(10.00);
+        BigDecimal unitsValue = order.getTotalPayment();
+        BigDecimal valueTotalWithTaxes = unitsValue.add(taxTotal).add(shipping).add(handling).subtract(shippingDiscount);
+        
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest().referenceId("PUHF")
-                .description("Sporting Goods").customId("CUST-HighFashions").softDescriptor("HighFashions")
-                .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value("230.00")
-                        .amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("USD").value("180.00"))
-                                .shipping(new Money().currencyCode("USD").value("30.00"))
-                                .handling(new Money().currencyCode("USD").value("10.00"))
-                                .taxTotal(new Money().currencyCode("USD").value("20.00"))
-                                .shippingDiscount(new Money().currencyCode("USD").value("10.00"))))
-                .items(new ArrayList<Item>() {
-                    {
-                        add(new Item().name("T-shirt").description("Green XL").sku("sku01")
-                                .unitAmount(new Money().currencyCode("USD").value("90.00"))
-                                .tax(new Money().currencyCode("USD").value("10.00")).quantity("1")
-                                .category("PHYSICAL_GOODS"));
-                        add(new Item().name("Shoes").description("Running, Size 10.5").sku("sku02")
-                                .unitAmount(new Money().currencyCode("USD").value("45.00"))
-                                .tax(new Money().currencyCode("USD").value("5.00")).quantity("2")
-                                .category("PHYSICAL_GOODS"));
-                    }
-                })
-                .shippingDetail(new ShippingDetail().name(new Name().fullName("John Doe"))
-                        .addressPortable(new AddressPortable().addressLine1("123 Townsend St").addressLine2("Floor 6")
-                                .adminArea2("San Francisco").adminArea1("CA").postalCode("94107").countryCode("US")));
+                .description("DESCRIPTION").customId("CUST-ID").softDescriptor("DESCRIPTOR")
+                .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(valueTotalWithTaxes.toString())
+                        .amountBreakdown(new AmountBreakdown().itemTotal(new Money().currencyCode("USD").value(unitsValue.toString()))
+                                .shipping(new Money().currencyCode("USD").value(shipping.toString()))
+                                .handling(new Money().currencyCode("USD").value(handling.toString()))
+                                .taxTotal(new Money().currencyCode("USD").value(taxTotal.toString()))
+                                .shippingDiscount(new Money().currencyCode("USD").value(shippingDiscount.toString()))))
+                .items(items)
+                .shippingDetail(new ShippingDetail().name(new Name().fullName(order.getUserData().getFullName()))
+                        .addressPortable(new AddressPortable().addressLine1(order.getUserData().getAddress()).addressLine2("Floor 6")
+                                .adminArea2(order.getUserData().getState().getTownName()).adminArea1(order.getUserData().getState().getDaneCodeTown()).postalCode("94107").countryCode(order.getUserData().getState().getCountry().getIso2())));
         purchaseUnitRequests.add(purchaseUnitRequest);
         orderRequest.purchaseUnits(purchaseUnitRequests);
         return orderRequest;
@@ -210,6 +225,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public GeneralResponseModel captureOrder(PaymentPaypalRequest paymentPaypalRequest) throws IOException {
+        // TODO: Generar un bearer token antes de enviar la petición
         // TODO: Verificar datos al crear order (Resta cantidad de productos)
         PayPalHttpClient client = paypalService.client;
         OrdersCaptureRequest request = new OrdersCaptureRequest(paymentPaypalRequest.getOrderPaypalId());
