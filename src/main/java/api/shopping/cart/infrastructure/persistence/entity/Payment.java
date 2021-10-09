@@ -1,5 +1,6 @@
 package api.shopping.cart.infrastructure.persistence.entity;
 
+import api.shopping.cart.infrastructure.persistence.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,60 +9,53 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import static javax.persistence.FetchType.LAZY;
+import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
- * UserData class
+ * Payment class
  *
  * @author edwin.lopezb.1297
  * @project shoppingcart
- * @since v1.0.0 - sep. 2021
+ * @since v1.0.0 - oct. 2021
  */
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tb_user_data")
 @Entity
-public class UserData {
+@Table(name = "tb_payment")
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, length = 20, nullable = false)
-    private String nid;
+    private String paypalOrderId;
 
     @Column(nullable = false)
-    private String name;
+    private BigDecimal totalPayment;
 
     @Column(nullable = false)
-    private String lastName;
+    private Instant date;
 
-    @Column(length = 20)
-    private String phone;
-
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String address;
+    private PaymentMethod paymentMethod;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "address_state", referencedColumnName = "id")
-    private State state;
+    @OneToOne
+    private Order order;
 
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    public String getFullName() {
-        return name + " " + lastName;
-    }
+    @ManyToOne
+    private UserData user;
 }

@@ -24,6 +24,8 @@ public interface ProductRepository {
 
     void save(Product newProduct);
 
+    void saveAll(List<Product> products);
+
     Page<Product> findAllByDeletedAtIsNotNull(Pageable pageable);
 
     Optional<Product> findByIdAndDeleteAtIsNotNull(Long id);

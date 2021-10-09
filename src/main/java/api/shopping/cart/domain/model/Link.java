@@ -36,10 +36,11 @@ public class Link {
     @JsonProperty
     private String href;
 
-    enum HttpMethods {
+    public enum HttpMethods {
         GET,
         POST,
         PUT,
+        PATCH,
         DELETE
     }
 }

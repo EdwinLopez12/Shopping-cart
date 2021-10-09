@@ -21,4 +21,5 @@ public final class RoutesMapping {
     public static final String URL_TOWNS_V1 = "/api/v1/towns";
     public static final String URL_CATEGORIES_V1= "/api/v1/categories";
     public static final String URL_ORDERS_V1 = "/api/v1/orders";
+    public static final String URL_PAYMENTS_V1 = "/api/v1/payments";
 }
