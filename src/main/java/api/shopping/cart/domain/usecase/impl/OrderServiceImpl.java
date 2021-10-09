@@ -183,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
     public GeneralResponseModel deleteProduct(Long id, OrderRequest orderRequest) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ApiNotFoundException(ORDER_NOT_FOUND));
         if (orderRequest.getProducts().isEmpty()) throw new ApiConflictException(ORDER_REQUEST_NOT_HAVE_PRODUCTS);
-        if (!order.getOrderProducts().isEmpty()) throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
+        if (order.getOrderProducts().isEmpty()) throw new ApiConflictException(ORDER_NOT_HAVE_PRODUCTS);
 
         for (OrderProducts ops : orderRequest.getProducts()) {
             boolean flag = false;

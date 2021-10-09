@@ -114,7 +114,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setUser(userData);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setDate(Instant.now());
-        if (!paymentRequest.getPaypalOrderId().isEmpty()) payment.setPaypalOrderId(paymentRequest.getPaypalOrderId());
+        if (paymentRequest.getPaypalOrderId() != null) payment.setPaypalOrderId(paymentRequest.getPaypalOrderId());
         paymentRepository.save(payment);
         order.setStatus(orderStatus);
         orderRepository.save(order);
