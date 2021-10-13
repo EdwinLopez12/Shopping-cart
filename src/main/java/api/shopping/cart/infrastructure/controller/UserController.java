@@ -5,6 +5,7 @@ import api.shopping.cart.domain.dto.user.UserRolesRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.UserService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class UserController {
      * @param userRolesRequest the user roles request
      * @return the response entity
      */
+    @ApiOperation("update the roles of a certain user")
     @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @PutMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> updateRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
@@ -54,6 +56,7 @@ public class UserController {
      * @param userRolesRequest the user roles request
      * @return the response entity
      */
+    @ApiOperation("Remove the role from a user")
     @PreAuthorize("hasAuthority('EDIT_ROLE')")
     @DeleteMapping(value = "/{id}/roles")
     public ResponseEntity<GeneralResponseModel> deleteRoles(@PathVariable(name = "id") Long id, @Valid @RequestBody UserRolesRequest userRolesRequest) {
@@ -67,6 +70,7 @@ public class UserController {
      * @param userDataRequest the user data request
      * @return the response entity
      */
+    @ApiOperation("Add user data to a logged in user")
     @PreAuthorize("hasAuthority('EDIT_USER')")
     @PostMapping(value = "/data")
     public ResponseEntity<GeneralResponseModel> addData(@Valid @RequestBody UserDataRequest userDataRequest) {
@@ -80,6 +84,7 @@ public class UserController {
      * @param userDataRequest the user data request
      * @return the response entity
      */
+    @ApiOperation("Edit user data to a logged in user")
     @PreAuthorize("hasAuthority('EDIT_USER')")
     @PutMapping(value = "/data")
     public ResponseEntity<GeneralResponseModel> editData(@Valid @RequestBody UserDataRequest userDataRequest) {

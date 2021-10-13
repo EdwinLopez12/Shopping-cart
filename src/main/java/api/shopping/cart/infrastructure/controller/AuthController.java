@@ -9,6 +9,7 @@ import api.shopping.cart.domain.dto.auth.RegisterUserRequest;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.AuthService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,6 @@ import javax.validation.Valid;
  * @project shoppingcart
  * @since v1.0.0 - aug. 2021
  */
-
 @RestController
 @RequestMapping(value = RoutesMapping.URL_AUTH_V1)
 @AllArgsConstructor
@@ -43,6 +43,7 @@ public class AuthController {
      * @param registerUserRequest the register user request
      * @return the response entity
      */
+    @ApiOperation("Register new user on the application")
     @PostMapping(value = "/signup")
     public ResponseEntity<GeneralResponseModel> signup(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
 
@@ -55,6 +56,7 @@ public class AuthController {
      * @param token the token
      * @return the response entity
      */
+    @ApiOperation("Verify the account through a token sent via email")
     @GetMapping(value = "/account-verification/{token}")
     public ResponseEntity<GeneralResponseModel> verifyAccount(@PathVariable(name = "token") String token) {
 
@@ -67,6 +69,7 @@ public class AuthController {
      * @param loginUserRequest the login user request
      * @return the response entity
      */
+    @ApiOperation("Login a user to the system, generating a JWT")
     @PostMapping(value = "/login")
     public ResponseEntity<GeneralResponseModel> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
 
@@ -79,6 +82,7 @@ public class AuthController {
      * @param refreshTokenRequest the refresh token request
      * @return the response entity
      */
+    @ApiOperation("Refresh the JWT to get access again when the token expires")
     @PostMapping(value = "/refresh-token")
     public ResponseEntity<GeneralResponseModel> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
 
@@ -91,6 +95,7 @@ public class AuthController {
      * @param logoutRequest the logout request
      * @return the response entity
      */
+    @ApiOperation("Close the user session in the application")
     @PostMapping(value = "/logout")
     public ResponseEntity<GeneralResponseModel> logout(@Valid @RequestBody LogoutRequest logoutRequest) {
 
@@ -103,6 +108,7 @@ public class AuthController {
      * @param emailRequest the email request
      * @return the response entity
      */
+    @ApiOperation("Send an email to validate the user and allow the password change")
     @PostMapping(value = "/reset-password")
     public ResponseEntity<GeneralResponseModel> sendEmailToResetPassword(@Valid @RequestBody EmailRequest emailRequest) {
 
@@ -115,12 +121,21 @@ public class AuthController {
      * @param token the token
      * @return the response entity
      */
+    @ApiOperation("Validate the token sent via email to reset the password")
     @GetMapping(value = "/reset-password/{token}")
     public ResponseEntity<GeneralResponseModel> verifyTokenToResetPassword(@PathVariable(name = "token") String token) {
 
         return new ResponseEntity<>(authService.verifyTokenToResetPassword(token), HttpStatus.OK);
     }
 
+
+    /**
+     * Reset password response entity.
+     *
+     * @param passwordResetRequest the password reset request
+     * @return the response entity
+     */
+    @ApiOperation("Update password")
     @PutMapping(value = "/reset-password")
     public ResponseEntity<GeneralResponseModel> resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
 

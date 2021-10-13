@@ -91,6 +91,7 @@ public class AuthServiceImpl implements AuthService {
                             .email(registerUserRequest.getEmail())
                             .password(passwordEncoder.encode(registerUserRequest.getPassword()))
                             .isEnable(false)
+                            .createdAt(Instant.now())
                             .build();
                     Role role = roleRepository.findByName("USER_ROLE").orElseThrow(() -> new ApiNotFoundException(ROLE_NOT_FOUND));
                     user.addRole(role);

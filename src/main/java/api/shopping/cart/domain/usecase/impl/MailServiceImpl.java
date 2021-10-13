@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import static api.shopping.cart.infrastructure.RoutesMapping.FULL_BASE_HEROKU;
 import static api.shopping.cart.infrastructure.RoutesMapping.FULL_BASE_V1;
 import static api.shopping.cart.infrastructure.RoutesMapping.URL_AUTH_V1;
 
@@ -41,7 +42,8 @@ public class MailServiceImpl implements MailService {
                 .recipient(email)
                 .message(message)
                 .button(button)
-                .url(String.format("%s%s/%s", FULL_BASE_V1+URL_AUTH_V1, endPoint, token))
+//                .url(String.format("%s%s/%s", FULL_BASE_V1 + URL_AUTH_V1, endPoint, token))
+                .url(String.format("%s%s/%s", FULL_BASE_HEROKU + URL_AUTH_V1, endPoint, token))
                 .build();
         sendEmail(notificationEmailModel, template);
     }
@@ -49,7 +51,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmail(NotificationEmailModel notificationEmailModel, String template) {
         MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("shoppingcart@mail.com");
+            messageHelper.setFrom("authenticationapi0@gmail.com");
             messageHelper.setTo(notificationEmailModel.getRecipient());
             messageHelper.setSubject(notificationEmailModel.getSubject());
             messageHelper.setText(

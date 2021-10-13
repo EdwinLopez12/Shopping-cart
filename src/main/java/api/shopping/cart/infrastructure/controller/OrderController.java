@@ -5,6 +5,7 @@ import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.OrderService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class OrderController {
      * @param size the size
      * @return the all
      */
+    @ApiOperation("Get a list of paginated orders")
     @PreAuthorize("hasAuthority('BROWSE_ORDER')")
     @GetMapping
     public ResponseEntity<PageableGeneralResponseModel> getAll(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -56,6 +58,7 @@ public class OrderController {
      * @param size the size
      * @return the all by user
      */
+    @ApiOperation("Get a list of paginated categories through the logged user")
     @PreAuthorize("hasAuthority('BROWSE_ORDER')")
     @GetMapping(value = "/by-users")
     public ResponseEntity<PageableGeneralResponseModel> getAllByUser(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -69,6 +72,7 @@ public class OrderController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Get a certain order through its id")
     @PreAuthorize("hasAuthority('READ_ORDER')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> get(@PathVariable(name = "id") Long id) {
@@ -83,6 +87,7 @@ public class OrderController {
      * @param orderRequest the order request
      * @return the response entity
      */
+    @ApiOperation("Edit a specific order through the id")
     @PreAuthorize("hasAuthority('EDIT_ORDER')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> edit(@PathVariable(name = "id") Long id, @Valid @RequestBody OrderRequest orderRequest) {
@@ -96,6 +101,7 @@ public class OrderController {
      * @param orderRequest the order request
      * @return the response entity
      */
+    @ApiOperation("Add a new order")
     @PreAuthorize("hasAuthority('ADD_ORDER')")
     @PostMapping
     public ResponseEntity<GeneralResponseModel> add(@Valid @RequestBody OrderRequest orderRequest) {
@@ -109,6 +115,7 @@ public class OrderController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Soft delete of the order through its id")
     @PreAuthorize("hasAuthority('DELETE_ORDER')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> delete(@PathVariable(name = "id") Long id) {
@@ -123,6 +130,7 @@ public class OrderController {
      * @param orderRequest the order request
      * @return the response entity
      */
+    @ApiOperation("Remove a specific product from the order through the product id")
     @PreAuthorize("hasAuthority('DELETE_ORDER')" + "&& hasAuthority('DELETE_PRODUCT')")
     @PostMapping(value = "/product/{id}")
     public ResponseEntity<GeneralResponseModel> deleteProduct(@PathVariable(name = "id") Long id, @Valid @RequestBody OrderRequest orderRequest) {

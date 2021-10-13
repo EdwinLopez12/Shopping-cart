@@ -3,6 +3,7 @@ package api.shopping.cart.infrastructure.controller;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.StateService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class StateController {
      * @param country the country
      * @return the response entity
      */
+    @ApiOperation("Get the cities, departments, states with a certain country")
     @PreAuthorize("hasAuthority('BROWSE_TOWN')")
     @GetMapping(value = "/{country}")
     public ResponseEntity<GeneralResponseModel> listTownsByCountry(@PathVariable(name = "country") String country) {

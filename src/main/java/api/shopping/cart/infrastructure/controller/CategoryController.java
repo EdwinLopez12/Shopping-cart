@@ -5,6 +5,7 @@ import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.CategoryService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class CategoryController {
      * @param size the size
      * @return the all
      */
+    @ApiOperation("Get a list of paginated categories")
     @PreAuthorize("hasAuthority('BROWSE_CATEGORY')")
     @GetMapping()
     public ResponseEntity<PageableGeneralResponseModel> getAll(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -55,6 +57,7 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Get a certain category through its id")
     @PreAuthorize("hasAuthority('READ_CATEGORY')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> get(@PathVariable(name = "id") Long id) {
@@ -69,6 +72,7 @@ public class CategoryController {
      * @param categoryRequest the category request
      * @return the response entity
      */
+    @ApiOperation("Edit a specific category through the id")
     @PreAuthorize("hasAuthority('EDIT_CATEGORY')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> edit(@PathVariable(name = "id") Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
@@ -82,6 +86,7 @@ public class CategoryController {
      * @param categoryRequest the product request
      * @return the response entity
      */
+    @ApiOperation("Add a new category")
     @PreAuthorize("hasAuthority('ADD_CATEGORY')")
     @PostMapping
     public ResponseEntity<GeneralResponseModel> add(@Valid @RequestBody CategoryRequest categoryRequest) {
@@ -95,6 +100,7 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Soft delete of the category through its id")
     @PreAuthorize("hasAuthority('DELETE_CATEGORY')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> delete(@PathVariable(name = "id") Long id) {
@@ -108,6 +114,7 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Get all the products through a certain category id")
     @PreAuthorize("hasAuthority('BROWSE_CATEGORY')")
     @GetMapping(value = "{id}/products")
     public ResponseEntity<GeneralResponseModel> productsByCategory(@PathVariable(name = "id") Long id) {
@@ -122,6 +129,7 @@ public class CategoryController {
      * @param size the size
      * @return the response entity
      */
+    @ApiOperation("Get all deleted categories")
     @PreAuthorize("hasAuthority('BROWSE_CATEGORY')" + "&& hasAuthority('DELETE_CATEGORY')")
     @GetMapping(value = "/deleted")
     public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -135,6 +143,7 @@ public class CategoryController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Reactivate a deleted category through its id")
     @PreAuthorize("hasAuthority('BROWSE_CATEGORY')" + "&& hasAuthority('EDIT_CATEGORY')")
     @PutMapping(value = "/deleted/{id}")
     public ResponseEntity<GeneralResponseModel> reactivate(@PathVariable(name = "id") Long id) {

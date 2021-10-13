@@ -11,6 +11,7 @@ package api.shopping.cart.infrastructure;
 public final class RoutesMapping {
     private RoutesMapping(){}
 
+    public static final String FULL_BASE_HEROKU = "https://edwinlopez12-shopping-cart.herokuapp.com";
     public static final String FULL_BASE_V1 = "http://localhost:9090";
     public static final String URL_AUTH_V1 = "/api/v1/auth";
     public static final String URL_PRODUCTS_V1 = "/api/v1/products";

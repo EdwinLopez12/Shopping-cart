@@ -5,6 +5,7 @@ import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.RoleService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +83,7 @@ public class RoleController {
      * @param roleWithPrivilegesRequest the role request
      * @return the response entity
      */
+    @ApiOperation("Add a new role")
     @PreAuthorize("hasAuthority('ADD_ROLE')")
     @PostMapping
     public ResponseEntity<GeneralResponseModel> addRole(@Valid @RequestBody RoleWithPrivilegesRequest roleWithPrivilegesRequest) {
@@ -95,6 +97,7 @@ public class RoleController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Soft delete of the role through its id")
     @PreAuthorize("hasAuthority('DELETE_ROLE')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> deleteRole(@PathVariable(name = "id") Long id) {
@@ -109,6 +112,7 @@ public class RoleController {
      * @param id the id
      * @return the all users
      */
+    @ApiOperation("Get the users who have the role")
     @PreAuthorize("hasAuthority('BROWSE_ROLE')")
     @GetMapping(value = "/{id}/users")
     public ResponseEntity<GeneralResponseModel> getAllUsers(@PathVariable(name = "id") Long id) {

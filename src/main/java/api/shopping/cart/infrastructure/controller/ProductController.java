@@ -5,6 +5,7 @@ import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.model.GeneralResponseModel;
 import api.shopping.cart.domain.usecase.ProductService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class ProductController {
      * @param size the size
      * @return the all
      */
+    @ApiOperation("Get a list of paginated products")
     @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
     @GetMapping()
     public ResponseEntity<PageableGeneralResponseModel> getAll(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -55,6 +57,7 @@ public class ProductController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Get a certain product through its id")
     @PreAuthorize("hasAuthority('READ_PRODUCT')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> get(@PathVariable(name = "id") Long id) {
@@ -69,6 +72,7 @@ public class ProductController {
      * @param productRequest the product request
      * @return the response entity
      */
+    @ApiOperation("Edit a specific product through the id")
     @PreAuthorize("hasAuthority('EDIT_PRODUCT')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> edit(@PathVariable(name = "id") Long id, @Valid @RequestBody ProductRequest productRequest) {
@@ -82,6 +86,7 @@ public class ProductController {
      * @param productRequest the product request
      * @return the response entity
      */
+    @ApiOperation("Add a new product")
     @PreAuthorize("hasAuthority('ADD_PRODUCT')")
     @PostMapping
     public ResponseEntity<GeneralResponseModel> add(@Valid @RequestBody ProductRequest productRequest) {
@@ -95,6 +100,7 @@ public class ProductController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Soft delete of the product through its id")
     @PreAuthorize("hasAuthority('DELETE_PRODUCT')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GeneralResponseModel> delete(@PathVariable(name = "id") Long id) {
@@ -108,6 +114,7 @@ public class ProductController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Get product categories")
     @PreAuthorize("hasAuthority('BROWSE_PRODUCT')")
     @GetMapping(value = "{id}/categories")
     public ResponseEntity<GeneralResponseModel> categoriesByProduct(@PathVariable(name = "id") Long id) {
@@ -122,6 +129,7 @@ public class ProductController {
      * @param size the size
      * @return the response entity
      */
+    @ApiOperation("Soft delete of the product through its id")
     @PreAuthorize("hasAuthority('BROWSE_PRODUCT')" + "&& hasAuthority('DELETE_PRODUCT')")
     @GetMapping(value = "/deleted")
     public ResponseEntity<PageableGeneralResponseModel> deletedList(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
@@ -135,6 +143,7 @@ public class ProductController {
      * @param id the id
      * @return the response entity
      */
+    @ApiOperation("Reactivate a deleted product through its id")
     @PreAuthorize("hasAuthority('BROWSE_PRODUCT')" + "&& hasAuthority('EDIT_PRODUCT')")
     @PutMapping(value = "/deleted/{id}")
     public ResponseEntity<GeneralResponseModel> reactivate(@PathVariable(name = "id") Long id) {

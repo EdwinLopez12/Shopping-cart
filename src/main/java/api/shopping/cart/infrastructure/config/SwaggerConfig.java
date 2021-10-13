@@ -25,20 +25,20 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     @Bean
-    public Docket auasrvApi(){
+    public Docket shoppingCart(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(getAuasrvApiInfo());
+                .apiInfo(getShoppingCartApiInfo());
     }
 
-    private ApiInfo getAuasrvApiInfo(){
+    private ApiInfo getShoppingCartApiInfo(){
         return new ApiInfoBuilder()
-                .title("Carrito de compras")
-                .version("V.0.1-Alpha")
-                .description(" Carrito de compras con paypal y Jwt ")
+                .title("Shopping Cart")
+                .version("V1.0.0")
+                .description(" Shopping cart with paypal integration")
                 .contact(new Contact("Edwin Lopez", "http://github.com/EdwinLopez12", "edwin.lopezb.1297@email.com"))
                 .license("MIT License")
                 .build();

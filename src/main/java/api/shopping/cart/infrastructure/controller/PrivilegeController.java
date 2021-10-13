@@ -3,6 +3,7 @@ package api.shopping.cart.infrastructure.controller;
 import api.shopping.cart.domain.exception.PageableGeneralResponseModel;
 import api.shopping.cart.domain.usecase.PrivilegeService;
 import api.shopping.cart.infrastructure.RoutesMapping;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class PrivilegeController {
      * @param size the size
      * @return the response entity
      */
+    @ApiOperation("Get a list of paginated privileges")
     @PreAuthorize("hasAuthority('BROWSE_PRIVILEGE')")
     @GetMapping
     public ResponseEntity<PageableGeneralResponseModel> getAll(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page, @RequestParam(name = "size", required = false, defaultValue = "10") Integer size){

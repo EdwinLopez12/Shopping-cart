@@ -34,7 +34,7 @@ import static io.jsonwebtoken.Jwts.parser;
 @Service
 public class JwtProvider {
 
-    @Value("${jsk.secret.password}")
+    @Value("${jks.secret.password}")
     private String secret;
 
     @Value("${jwt.expiration.time}")
